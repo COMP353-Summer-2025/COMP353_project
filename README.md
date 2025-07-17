@@ -1,4 +1,4 @@
-# COMP353/COMP5531 Summer 2025 - Warm-Up Project
+# COMP353 Summer 2025 - Warm-Up Project
 
 ## Team Members
 
