@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS FamilyMembers;
 DROP TABLE IF EXISTS Personnel;
 DROP TABLE IF EXISTS Hobbies;
 DROP TABLE IF EXISTS Locations;
-
 -- Create Tables
 CREATE TABLE Locations (
     locationID INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +23,6 @@ CREATE TABLE Locations (
     maxCapacity INT,
     UNIQUE(name)
 );
-
 CREATE TABLE Personnel (
     personnelID INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(100) NOT NULL,
@@ -41,7 +39,6 @@ CREATE TABLE Personnel (
     role ENUM('Administrator', 'Captain', 'Coach', 'Assistant Coach', 'Other') NOT NULL,
     mandate ENUM('Volunteer', 'Salaried') NOT NULL
 );
-
 CREATE TABLE PersonnelLocation (
     personnelID INT NOT NULL,
     locationID INT NOT NULL,
@@ -51,7 +48,6 @@ CREATE TABLE PersonnelLocation (
     FOREIGN KEY (personnelID) REFERENCES Personnel(personnelID),
     FOREIGN KEY (locationID) REFERENCES Locations(locationID)
 );
-
 CREATE TABLE FamilyMembers (
     familyMemberID INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(100) NOT NULL,
@@ -66,7 +62,6 @@ CREATE TABLE FamilyMembers (
     postalCode VARCHAR(20),
     email VARCHAR(100)
 );
-
 CREATE TABLE FamilyMemberLocation (
     familyMemberID INT NOT NULL,
     locationID INT NOT NULL,
@@ -76,7 +71,6 @@ CREATE TABLE FamilyMemberLocation (
     FOREIGN KEY (familyMemberID) REFERENCES FamilyMembers(familyMemberID),
     FOREIGN KEY (locationID) REFERENCES Locations(locationID)
 );
-
 CREATE TABLE ClubMembers (
     memberID INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(100) NOT NULL,
@@ -95,7 +89,6 @@ CREATE TABLE ClubMembers (
     isMinor BOOLEAN NOT NULL,
     FOREIGN KEY (locationID) REFERENCES Locations(locationID)
 );
-
 CREATE TABLE MemberFamilyRelations (
     memberID INT NOT NULL,
     familyMemberID INT NOT NULL,
@@ -104,12 +97,10 @@ CREATE TABLE MemberFamilyRelations (
     FOREIGN KEY (memberID) REFERENCES ClubMembers(memberID),
     FOREIGN KEY (familyMemberID) REFERENCES FamilyMembers(familyMemberID)
 );
-
 CREATE TABLE Hobbies (
     hobbyID INT AUTO_INCREMENT PRIMARY KEY,
     hobbyName VARCHAR(50) NOT NULL UNIQUE
 );
-
 CREATE TABLE ClubMemberHobbies (
     memberID INT NOT NULL,
     hobbyID INT NOT NULL,
@@ -117,7 +108,6 @@ CREATE TABLE ClubMemberHobbies (
     FOREIGN KEY (memberID) REFERENCES ClubMembers(memberID),
     FOREIGN KEY (hobbyID) REFERENCES Hobbies(hobbyID)
 );
-
 CREATE TABLE Payments (
     paymentID INT AUTO_INCREMENT PRIMARY KEY,
     memberID INT NOT NULL,
@@ -173,7 +163,6 @@ VALUES ('Delia', 'Ketchum', '1960-05-15', 'FSSN001', 'FMED001', '555-1212', '123
 
 
 -- Insert Data into FamilyMemberLocation
-
 INSERT INTO FamilyMemberLocation (familyMemberID, locationID, startDate, endDate)
 VALUES (1, 1, '2023-01-01', NULL),
     (2, 2, '2023-01-01', NULL),
@@ -185,7 +174,6 @@ VALUES (1, 1, '2023-01-01', NULL),
     (8, 8, '2023-01-01', NULL),
     (9, 9, '2023-01-01', NULL),
     (10, 10, '2023-01-01', NULL);
-
 
 -- Insert Data into ClubMembers
 
@@ -202,16 +190,13 @@ VALUES ('Pikachu', 'Electric', '2015-08-10', 0.4, 6.0, 'CSSN001', 'CMED001', '55
     ('Mewtwo', 'Psychic', '2005-06-23', 2.0, 122, 'CSSN010', 'CMED010', '555-3010', '555 Psychic Ln', 'Blackthorn City', 'Johto', 'B1C 4TN', 10, FALSE);
 
 -- Insert Data into MemberFamilyRelations
-
 INSERT INTO MemberFamilyRelations (memberID, familyMemberID, relationship)
 VALUES (1, 1, 'Mother'),
     (3, 2, 'Mother'),
     (5, 3, 'Father'),
     (7, 4, 'Tutor'),
     (9, 5, 'Grandmother');
-
 -- Insert Data into PersonnelLocation
-
 INSERT INTO PersonnelLocation (personnelID, locationID, startDate, endDate)
 VALUES (1, 1, '2023-01-01', NULL),
     (2, 2, '2023-02-01', NULL),
@@ -223,9 +208,7 @@ VALUES (1, 1, '2023-01-01', NULL),
     (8, 6, '2023-03-15', NULL),
     (9, 7, '2023-05-01', NULL),
     (10, 8, '2023-06-01', NULL);
-
 -- Insert Data into Hobbies
-
 INSERT INTO Hobbies (hobbyName)
 VALUES ('Volleyball'),
     ('Soccer'),
@@ -237,9 +220,7 @@ VALUES ('Volleyball'),
     ('Badminton'),
     ('Basketball'),
     ('Running');
-
 -- Insert Data into ClubMemberHobbies
-
 INSERT INTO ClubMemberHobbies
 VALUES (2, 1),
     (2, 2),
@@ -260,7 +241,6 @@ VALUES (2, 1),
     (8, 6),
     (8, 10),
     (9, 2);
-
 -- Insert Data into Payments
 
 INSERT INTO Payments (memberID, paymentDate, paymentAmount, paymentMethod, membershipYear)
@@ -274,110 +254,154 @@ VALUES (1, '2024-01-15', 100.00, 'Credit Card', 2024),
     (8, '2024-04-01', 200.00, 'Debit', 2024),
     (9, '2024-05-10', 100.00, 'Cash', 2024),
     (10, '2024-06-18', 200.00, 'Credit Card', 2024);
-
--- -- 8 Required Queries
-
--- -- 1. Location details with personnel and member counts
--- SELECT L.*, 
---        COUNT(DISTINCT PL.personnelID) AS personnelCount,
---        COUNT(DISTINCT CM.memberID) AS memberCount
--- FROM Locations L
--- LEFT JOIN PersonnelLocation PL ON L.locationID = PL.locationID AND PL.endDate IS NULL
--- LEFT JOIN ClubMembers CM ON L.locationID = CM.locationID
--- GROUP BY L.locationID
--- ORDER BY memberCount DESC;
-
--- -- 2. Major members who are also active personnel
--- SELECT CM.memberID, CM.firstName, CM.lastName,
---        TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
---        CM.city, CM.province,
---        IF(SUM(YEAR(P.paymentDate) = YEAR(CURDATE())) >= 1, 'Active', 'Inactive') AS status,
---        L.name AS memberLocation,
---        L2.name AS personnelLocation
--- FROM ClubMembers CM
--- JOIN Personnel P ON CM.socialSecurityNumber = P.socialSecurityNumber
--- JOIN PersonnelLocation PL ON P.personnelID = PL.personnelID AND PL.endDate IS NULL
--- JOIN Locations L2 ON PL.locationID = L2.locationID
--- JOIN Locations L ON CM.locationID = L.locationID
--- WHERE CM.isMinor = FALSE
--- GROUP BY CM.memberID
--- ORDER BY L2.name ASC, age ASC;
-
--- -- 3. Members with at least 3 hobbies
--- SELECT CM.memberID, CM.firstName, CM.lastName,
---        TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
---        CM.city, CM.province,
---        IF(SUM(YEAR(P.paymentDate) = YEAR(CURDATE())) >= 1, 'Active', 'Inactive') AS status,
---        L.name AS locationName,
---        COUNT(CMH.hobbyID) AS hobbyCount
--- FROM ClubMembers CM
--- JOIN ClubMemberHobbies CMH ON CM.memberID = CMH.memberID
--- JOIN Locations L ON CM.locationID = L.locationID
--- LEFT JOIN Payments P ON CM.memberID = P.memberID
--- GROUP BY CM.memberID
--- HAVING hobbyCount >= 3
--- ORDER BY age DESC, locationName ASC;
-
--- -- 4. Members with no hobbies
--- SELECT CM.memberID, CM.firstName, CM.lastName,
---        TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
---        CM.city, CM.province,
---        IF(SUM(YEAR(P.paymentDate) = YEAR(CURDATE())) >= 1, 'Active', 'Inactive') AS status,
---        L.name AS locationName
--- FROM ClubMembers CM
--- LEFT JOIN ClubMemberHobbies CMH ON CM.memberID = CMH.memberID
--- JOIN Locations L ON CM.locationID = L.locationID
--- LEFT JOIN Payments P ON CM.memberID = P.memberID
--- WHERE CMH.hobbyID IS NULL
--- GROUP BY CM.memberID
--- ORDER BY locationName ASC, age ASC;
-
--- -- 5. Total number of members by age
--- SELECT TIMESTAMPDIFF(YEAR, dateOfBirth, CURDATE()) AS age,
---        COUNT(*) AS memberCount
--- FROM ClubMembers
--- GROUP BY age
--- ORDER BY age ASC;
-
--- -- 6. Major family members and their children
--- SELECT FM.firstName AS parentFirst, FM.lastName AS parentLast,
---        CM.memberID, CM.firstName, CM.lastName, CM.dateOfBirth,
---        CM.socialSecurityNumber, CM.medicareCardNumber, CM.telephoneNumber,
---        CM.address, CM.city, CM.province, CM.postalCode,
---        MFR.relationship,
---        IF(SUM(YEAR(P.paymentDate) = YEAR(CURDATE())) >= 1, 'Active', 'Inactive') AS status
--- FROM FamilyMembers FM
--- JOIN MemberFamilyRelations MFR ON FM.familyMemberID = MFR.familyMemberID
--- JOIN ClubMembers CM ON MFR.memberID = CM.memberID
--- LEFT JOIN Payments P ON CM.memberID = P.memberID
--- WHERE NOT EXISTS (SELECT 1 FROM ClubMembers CM2 WHERE CM2.socialSecurityNumber = FM.socialSecurityNumber)
--- GROUP BY CM.memberID;
-
--- -- 7. Total membership fees and donations by major members (2020–2024)
--- SELECT SUM(paymentAmount) AS totalPayments,
---        SUM(
---          CASE
---            WHEN CM.isMinor = TRUE AND paymentAmount > 100 THEN paymentAmount - 100
---            WHEN CM.isMinor = FALSE AND paymentAmount > 200 THEN paymentAmount - 200
---            ELSE 0
---          END
---        ) AS totalDonations
--- FROM Payments P
--- JOIN ClubMembers CM ON P.memberID = CM.memberID
--- WHERE membershipYear BETWEEN 2020 AND 2024;
-
--- -- 8. Inactive members and amount due
--- SELECT CM.memberID, CM.firstName, CM.lastName,
---        TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
---        CM.city, CM.province,
---        L.name AS locationName,
---        (CASE
---          WHEN CM.isMinor = TRUE THEN 100
---          ELSE 200
---        END - COALESCE(SUM(P.paymentAmount), 0)) AS amountDue
--- FROM ClubMembers CM
--- JOIN Locations L ON CM.locationID = L.locationID
--- LEFT JOIN Payments P ON CM.memberID = P.memberID AND membershipYear = YEAR(CURDATE()) - 1
--- GROUP BY CM.memberID
--- HAVING amountDue > 0
--- ORDER BY locationName ASC, age ASC;
+-- 8 Required Queries
+-- 1. Location details with personnel and member counts
+SELECT L.*,
+    COUNT(DISTINCT PL.personnelID) AS personnelCount,
+    COUNT(DISTINCT CM.memberID) AS memberCount
+FROM Locations L
+    LEFT JOIN PersonnelLocation PL ON L.locationID = PL.locationID
+    AND PL.endDate IS NULL
+    LEFT JOIN ClubMembers CM ON L.locationID = CM.locationID
+GROUP BY L.locationID
+ORDER BY memberCount DESC;
+-- 2. Major members who are also active personnel
+SELECT CM.memberID,
+    CM.firstName,
+    CM.lastName,
+    TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
+    CM.city,
+    CM.province,
+    IF(
+        SUM(YEAR(PAY.paymentDate) = YEAR(CURDATE())) >= 1,
+        'Active',
+        'Inactive'
+    ) AS status,
+    L.name AS memberLocation,
+    L2.name AS personnelLocation
+FROM ClubMembers CM
+    JOIN Personnel P ON CM.socialSecurityNumber = P.socialSecurityNumber
+    JOIN PersonnelLocation PL ON P.personnelID = PL.personnelID
+    AND PL.endDate IS NULL
+    JOIN Locations L2 ON PL.locationID = L2.locationID
+    JOIN Locations L ON CM.locationID = L.locationID
+    LEFT JOIN Payments PAY ON CM.memberID = PAY.memberID
+WHERE CM.isMinor = FALSE
+GROUP BY CM.memberID
+ORDER BY L2.name ASC,
+    age ASC;
+-- 3. Members with at least 3 hobbies
+SELECT CM.memberID,
+    CM.firstName,
+    CM.lastName,
+    TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
+    CM.city,
+    CM.province,
+    IF(
+        SUM(YEAR(P.paymentDate) = YEAR(CURDATE())) >= 1,
+        'Active',
+        'Inactive'
+    ) AS status,
+    L.name AS locationName,
+    COUNT(CMH.hobbyID) AS hobbyCount
+FROM ClubMembers CM
+    JOIN ClubMemberHobbies CMH ON CM.memberID = CMH.memberID
+    JOIN Locations L ON CM.locationID = L.locationID
+    LEFT JOIN Payments P ON CM.memberID = P.memberID
+GROUP BY CM.memberID
+HAVING hobbyCount >= 3
+ORDER BY age DESC,
+    locationName ASC;
+-- 4. Members with no hobbies
+SELECT CM.memberID,
+    CM.firstName,
+    CM.lastName,
+    TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
+    CM.city,
+    CM.province,
+    IF(
+        SUM(YEAR(P.paymentDate) = YEAR(CURDATE())) >= 1,
+        'Active',
+        'Inactive'
+    ) AS status,
+    L.name AS locationName
+FROM ClubMembers CM
+    LEFT JOIN ClubMemberHobbies CMH ON CM.memberID = CMH.memberID
+    JOIN Locations L ON CM.locationID = L.locationID
+    LEFT JOIN Payments P ON CM.memberID = P.memberID
+WHERE CMH.hobbyID IS NULL
+GROUP BY CM.memberID
+ORDER BY locationName ASC,
+    age ASC;
+-- 5. Total number of members by age
+SELECT TIMESTAMPDIFF(YEAR, dateOfBirth, CURDATE()) AS age,
+    COUNT(*) AS memberCount
+FROM ClubMembers
+GROUP BY age
+ORDER BY age ASC;
+-- 6. Major family members and their children
+SELECT FM.firstName AS parentFirst,
+    FM.lastName AS parentLast,
+    CM.memberID,
+    CM.firstName,
+    CM.lastName,
+    CM.dateOfBirth,
+    CM.socialSecurityNumber,
+    CM.medicareCardNumber,
+    CM.telephoneNumber,
+    CM.address,
+    CM.city,
+    CM.province,
+    CM.postalCode,
+    MFR.relationship,
+    IF(
+        SUM(YEAR(PAY.paymentDate) = YEAR(CURDATE())) >= 1,
+        'Active',
+        'Inactive'
+    ) AS status
+FROM FamilyMembers FM
+    JOIN MemberFamilyRelations MFR ON FM.familyMemberID = MFR.familyMemberID
+    JOIN ClubMembers CM ON MFR.memberID = CM.memberID
+    LEFT JOIN Payments PAY ON CM.memberID = PAY.memberID
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM ClubMembers CM2
+        WHERE CM2.socialSecurityNumber = FM.socialSecurityNumber
+    )
+GROUP BY CM.memberID;
+-- 7. Total membership fees and donations by major members (2020–2024)
+SELECT SUM(PAY.paymentAmount) AS totalPayments,
+    SUM(
+        CASE
+            WHEN CM.isMinor = TRUE
+            AND PAY.paymentAmount > 100 THEN PAY.paymentAmount - 100
+            WHEN CM.isMinor = FALSE
+            AND PAY.paymentAmount > 200 THEN PAY.paymentAmount - 200
+            ELSE 0
+        END
+    ) AS totalDonations
+FROM Payments PAY
+    JOIN ClubMembers CM ON PAY.memberID = CM.memberID
+WHERE PAY.membershipYear BETWEEN 2020 AND 2024;
+-- 8. Inactive members and amount due
+SELECT CM.memberID,
+    CM.firstName,
+    CM.lastName,
+    TIMESTAMPDIFF(YEAR, CM.dateOfBirth, CURDATE()) AS age,
+    CM.city,
+    CM.province,
+    L.name AS locationName,
+    (
+        CASE
+            WHEN CM.isMinor = TRUE THEN 100
+            ELSE 200
+        END - COALESCE(SUM(PAY.paymentAmount), 0)
+    ) AS amountDue
+FROM ClubMembers CM
+    JOIN Locations L ON CM.locationID = L.locationID
+    LEFT JOIN Payments PAY ON CM.memberID = PAY.memberID
+    AND PAY.membershipYear = YEAR(CURDATE()) - 1
+GROUP BY CM.memberID
+HAVING amountDue > 0
+ORDER BY locationName ASC,
+    age ASC;
