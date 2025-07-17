@@ -77,7 +77,6 @@ This is a preliminary database project designed to familiarize students with:
 
 - **Course**: COMP353/COMP5531 - Database Systems
 - **Semester**: Summer 2025
-- **Institution**: [University Name]
-- **Instructor**: [Professor Name]
+- **Institution**: Concordia University
 - **Project Type**: Team Warm-up Assignment
-- **Due Date**: [Insert Due Date]
+- **Due Date**: July 18, 2025
