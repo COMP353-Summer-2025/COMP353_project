@@ -9,7 +9,7 @@
       "server": "luc353.encs.concordia.ca",
       "port": 3306,
       "driver": "MySQL",
-      "name": "z_tonny",
+      "name": "warmup_project",
       "database": "luc353_1",
       "username": "luc353_1",
       "password": "comp353p"
