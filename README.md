@@ -52,7 +52,7 @@ This is a preliminary database project designed to familiarize students with:
 
 3. **Execute SQL Scripts**
    ```bash
-   mysql -u [username] -p comp353_warmup < z_tonny.session.sql
+   mysql -u [username] -p comp353_warmup < warmup_project.session.sql
    ```
 
 ## Usage
