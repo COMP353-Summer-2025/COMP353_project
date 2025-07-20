@@ -1,0 +1,6 @@
+parentFirst,parentLast,memberID,firstName,lastName,dateOfBirth,socialSecurityNumber,medicareCardNumber,telephoneNumber,address,city,province,postalCode,relationship,status
+Delia,Ketchum,1,Pikachu,Electric,2015-08-10,CSSN001,CMED001,555-3001,"123 Pikachu Rd","Pallet Town",Kanto,"K1N 7D4",Mother,Inactive
+Joy,Waterflower,3,Bulbasaur,Leaf,2012-11-20,CSSN003,CMED003,555-3003,"789 Leaf Ln","Vermilion City",Kanto,"V2R 5IT",Mother,Inactive
+"Lt. Surge",Surge,5,Jigglypuff,Song,2016-04-01,CSSN005,CMED005,555-3005,"654 Song St","Fuchsia City",Kanto,"F1C 9HS",Father,Inactive
+Officer,Jenny,7,Psyduck,Duck,2014-09-15,CSSN007,CMED007,555-3007,"222 Duck Blvd","Lavender Town",Kanto,"L2V 7RN",Tutor,Inactive
+Sabrina,Gym,9,Eevee,Evolution,2013-05-18,CSSN009,CMED009,555-3009,"444 Evolution St","Ecruteak City",Johto,"E3C 1TY",Grandmother,Inactive

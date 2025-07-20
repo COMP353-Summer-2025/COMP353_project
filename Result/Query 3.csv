@@ -1,0 +1,4 @@
+memberID,firstName,lastName,age,city,province,status,locationName,hobbyCount
+4,Squirtle,Shell,16,"Celadon City",Kanto,Inactive,"Celadon Club",3
+2,Charmander,Flame,15,"Cerulean City",Kanto,Inactive,"Cerulean Club",3
+6,Meowth,Cat,13,"Saffron City",Kanto,Inactive,"Saffron Club",4
