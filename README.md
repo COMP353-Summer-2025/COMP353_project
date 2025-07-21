@@ -8,7 +8,7 @@ This project is developed by a team of 4 members:
 | -------------------- | ------------ | -------------------------- |
 | Tonny Zhao           | 40283194     | z_tonny@encs.concordia.ca  |
 | Harwinder Mann       | 40293187     | m_harwin@encs.concordia.ca |
-| Nicolas Sorescu      | [Student ID] | n_soresc@encs.concordia.ca |
+| Nicolas Sorescu      | 40312759     | n_soresc@encs.concordia.ca |
 | Patrick Han          | 40112063     | pa_an@encs.concordia.ca    |
 
 ## Project Overview
