@@ -17,95 +17,108 @@ DROP TABLE IF EXISTS Personnel;
 DROP TABLE IF EXISTS Hobbies;
 DROP TABLE IF EXISTS Locations;
 -- Create Tables
-CREATE TABLE Locations (
-    locationID INT AUTO_INCREMENT PRIMARY KEY,
-    type ENUM('Head', 'Branch') NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    address VARCHAR(255),
-    city VARCHAR(100),
-    province VARCHAR(100),
-    postalCode VARCHAR(20),
-    phoneNumber VARCHAR(20),
-    webAddress VARCHAR(255),
-    maxCapacity INT,
-    UNIQUE(name)
-);
-CREATE TABLE Personnel (
-    personnelID INT AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100) NOT NULL,
-    dateOfBirth DATE,
-    socialSecurityNumber VARCHAR(20) NOT NULL UNIQUE,
-    medicareCardNumber VARCHAR(20) UNIQUE,
-    telephoneNumber VARCHAR(20),
-    address VARCHAR(255),
-    city VARCHAR(100),
-    province VARCHAR(100),
-    postalCode VARCHAR(20),
-    email VARCHAR(100),
-    role ENUM(
+CREATE TABLE `Locations` (
+    `locationID` int NOT NULL AUTO_INCREMENT,
+    `type` enum('Head', 'Branch') COLLATE utf8mb3_unicode_ci NOT NULL,
+    `name` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `address` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `city` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `province` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `postalCode` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `phoneNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `webAddress` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `maxCapacity` int DEFAULT NULL,
+    PRIMARY KEY (`locationID`),
+    UNIQUE KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `Personnel` (
+    `personnelID` int NOT NULL AUTO_INCREMENT,
+    `firstName` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `lastName` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `dateOfBirth` date DEFAULT NULL,
+    `socialSecurityNumber` varchar(20) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `medicareCardNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `telephoneNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `address` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `city` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `province` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `postalCode` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `email` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `role` enum(
         'Administrator',
         'Captain',
         'Coach',
         'Assistant Coach',
         'Other'
-    ) NOT NULL,
-    mandate ENUM('Volunteer', 'Salaried') NOT NULL
-);
-CREATE TABLE PersonnelLocation (
-    personnelID INT NOT NULL,
-    locationID INT NOT NULL,
-    startDate DATE NOT NULL,
-    endDate DATE,
-    PRIMARY KEY (personnelID, locationID, startDate),
-    FOREIGN KEY (personnelID) REFERENCES Personnel(personnelID),
-    FOREIGN KEY (locationID) REFERENCES Locations(locationID)
-);
-CREATE TABLE FamilyMembers (
-    familyMemberID INT AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100) NOT NULL,
-    dateOfBirth DATE,
-    socialSecurityNumber VARCHAR(20) NOT NULL UNIQUE,
-    medicareCardNumber VARCHAR(20) UNIQUE,
-    telephoneNumber VARCHAR(20),
-    address VARCHAR(255),
-    city VARCHAR(100),
-    province VARCHAR(100),
-    postalCode VARCHAR(20),
-    email VARCHAR(100)
-);
-CREATE TABLE FamilyMemberLocation (
-    familyMemberID INT NOT NULL,
-    locationID INT NOT NULL,
-    startDate DATE NOT NULL,
-    endDate DATE,
-    PRIMARY KEY (familyMemberID, locationID, startDate),
-    FOREIGN KEY (familyMemberID) REFERENCES FamilyMembers(familyMemberID),
-    FOREIGN KEY (locationID) REFERENCES Locations(locationID)
-);
-CREATE TABLE ClubMembers (
-    memberID INT AUTO_INCREMENT PRIMARY KEY,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100) NOT NULL,
-    dateOfBirth DATE NOT NULL,
-    height DECIMAL(4, 2),
-    weight DECIMAL(5, 2),
-    socialSecurityNumber VARCHAR(20) NOT NULL UNIQUE,
-    medicareCardNumber VARCHAR(20) UNIQUE,
-    telephoneNumber VARCHAR(20),
-    address VARCHAR(255),
-    city VARCHAR(100),
-    province VARCHAR(100),
-    postalCode VARCHAR(20),
-    locationID INT NOT NULL,
-    isMinor BOOLEAN NOT NULL,
-    FOREIGN KEY (locationID) REFERENCES Locations(locationID)
-);
-CREATE TABLE MemberFamilyRelations (
-    memberID INT NOT NULL,
-    familyMemberID INT NOT NULL,
-    relationship ENUM(
+    ) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `mandate` enum('Volunteer', 'Salaried') COLLATE utf8mb3_unicode_ci NOT NULL,
+    PRIMARY KEY (`personnelID`),
+    UNIQUE KEY `socialSecurityNumber` (`socialSecurityNumber`),
+    UNIQUE KEY `medicareCardNumber` (`medicareCardNumber`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `PersonnelLocation` (
+    `personnelID` int NOT NULL,
+    `locationID` int NOT NULL,
+    `startDate` date NOT NULL,
+    `endDate` date DEFAULT NULL,
+    PRIMARY KEY (`personnelID`, `locationID`, `startDate`),
+    KEY `locationID` (`locationID`),
+    CONSTRAINT `PersonnelLocation_ibfk_1` FOREIGN KEY (`personnelID`) REFERENCES `Personnel` (`personnelID`),
+    CONSTRAINT `PersonnelLocation_ibfk_2` FOREIGN KEY (`locationID`) REFERENCES `Locations` (`locationID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `FamilyMembers` (
+    `familyMemberID` int NOT NULL AUTO_INCREMENT,
+    `firstName` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `lastName` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `dateOfBirth` date DEFAULT NULL,
+    `socialSecurityNumber` varchar(20) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `medicareCardNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `telephoneNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `address` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `city` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `province` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `postalCode` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `email` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    PRIMARY KEY (`familyMemberID`),
+    UNIQUE KEY `socialSecurityNumber` (`socialSecurityNumber`),
+    UNIQUE KEY `medicareCardNumber` (`medicareCardNumber`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `FamilyMemberLocation` (
+    `familyMemberID` int NOT NULL,
+    `locationID` int NOT NULL,
+    `startDate` date NOT NULL,
+    `endDate` date DEFAULT NULL,
+    PRIMARY KEY (`familyMemberID`, `locationID`, `startDate`),
+    KEY `locationID` (`locationID`),
+    CONSTRAINT `FamilyMemberLocation_ibfk_1` FOREIGN KEY (`familyMemberID`) REFERENCES `FamilyMembers` (`familyMemberID`),
+    CONSTRAINT `FamilyMemberLocation_ibfk_2` FOREIGN KEY (`locationID`) REFERENCES `Locations` (`locationID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `ClubMembers` (
+    `memberID` int NOT NULL AUTO_INCREMENT,
+    `firstName` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `lastName` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `dateOfBirth` date NOT NULL,
+    `height` decimal(4, 2) DEFAULT NULL,
+    `weight` decimal(5, 2) DEFAULT NULL,
+    `socialSecurityNumber` varchar(20) COLLATE utf8mb3_unicode_ci NOT NULL,
+    `medicareCardNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `telephoneNumber` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `address` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `city` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `province` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `postalCode` varchar(20) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    `locationID` int NOT NULL,
+    `isMinor` tinyint(1) NOT NULL,
+    PRIMARY KEY (`memberID`),
+    UNIQUE KEY `socialSecurityNumber` (`socialSecurityNumber`),
+    UNIQUE KEY `medicareCardNumber` (`medicareCardNumber`),
+    KEY `locationID` (`locationID`),
+    CONSTRAINT `ClubMembers_ibfk_1` FOREIGN KEY (`locationID`) REFERENCES `Locations` (`locationID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `MemberFamilyRelations` (
+    `memberID` int NOT NULL,
+    `familyMemberID` int NOT NULL,
+    `relationship` enum(
         'Father',
         'Mother',
         'Grandfather',
@@ -114,28 +127,34 @@ CREATE TABLE MemberFamilyRelations (
         'Partner',
         'Friend',
         'Other'
-    ),
-    PRIMARY KEY (memberID, familyMemberID),
-    FOREIGN KEY (memberID) REFERENCES ClubMembers(memberID),
-    FOREIGN KEY (familyMemberID) REFERENCES FamilyMembers(familyMemberID)
-);
-CREATE TABLE Hobbies (
-    hobbyID INT AUTO_INCREMENT PRIMARY KEY,
-    hobbyName VARCHAR(50) NOT NULL UNIQUE
-);
-CREATE TABLE ClubMemberHobbies (
-    memberID INT NOT NULL,
-    hobbyID INT NOT NULL,
-    PRIMARY KEY (memberID, hobbyID),
-    FOREIGN KEY (memberID) REFERENCES ClubMembers(memberID),
-    FOREIGN KEY (hobbyID) REFERENCES Hobbies(hobbyID)
-);
-CREATE TABLE Payments (
-    paymentID INT AUTO_INCREMENT PRIMARY KEY,
-    memberID INT NOT NULL,
-    paymentDate DATE NOT NULL,
-    paymentAmount DECIMAL(7, 2) NOT NULL,
-    paymentMethod ENUM('Cash', 'Debit', 'Credit Card') NOT NULL,
-    membershipYear YEAR NOT NULL,
-    FOREIGN KEY (memberID) REFERENCES ClubMembers(memberID)
-);
+    ) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+    PRIMARY KEY (`memberID`, `familyMemberID`),
+    KEY `familyMemberID` (`familyMemberID`),
+    CONSTRAINT `MemberFamilyRelations_ibfk_1` FOREIGN KEY (`memberID`) REFERENCES `ClubMembers` (`memberID`),
+    CONSTRAINT `MemberFamilyRelations_ibfk_2` FOREIGN KEY (`familyMemberID`) REFERENCES `FamilyMembers` (`familyMemberID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `Hobbies` (
+    `hobbyID` int NOT NULL AUTO_INCREMENT,
+    `hobbyName` varchar(50) COLLATE utf8mb3_unicode_ci NOT NULL,
+    PRIMARY KEY (`hobbyID`),
+    UNIQUE KEY `hobbyName` (`hobbyName`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `ClubMemberHobbies` (
+    `memberID` int NOT NULL,
+    `hobbyID` int NOT NULL,
+    PRIMARY KEY (`memberID`, `hobbyID`),
+    KEY `hobbyID` (`hobbyID`),
+    CONSTRAINT `ClubMemberHobbies_ibfk_1` FOREIGN KEY (`memberID`) REFERENCES `ClubMembers` (`memberID`),
+    CONSTRAINT `ClubMemberHobbies_ibfk_2` FOREIGN KEY (`hobbyID`) REFERENCES `Hobbies` (`hobbyID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;
+CREATE TABLE `Payments` (
+    `paymentID` int NOT NULL AUTO_INCREMENT,
+    `memberID` int NOT NULL,
+    `paymentDate` date NOT NULL,
+    `paymentAmount` decimal(7, 2) NOT NULL,
+    `paymentMethod` enum('Cash', 'Debit', 'Credit Card') COLLATE utf8mb3_unicode_ci NOT NULL,
+    `membershipYear` year NOT NULL,
+    PRIMARY KEY (`paymentID`),
+    KEY `memberID` (`memberID`),
+    CONSTRAINT `Payments_ibfk_1` FOREIGN KEY (`memberID`) REFERENCES `ClubMembers` (`memberID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COLLATE = utf8mb3_unicode_ci;

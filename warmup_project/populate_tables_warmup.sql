@@ -673,8 +673,8 @@ VALUES (
     (
         'Charmander',
         'Flame',
-        '1999-02-15',
-        -- Age 26
+        '2005-02-15',
+        -- Age 20 (was minor when joined)
         0.6,
         8.5,
         'CSSN002',
@@ -706,8 +706,8 @@ VALUES (
     (
         'Squirtle',
         'Shell',
-        '1998-07-07',
-        -- Age 27
+        '2004-07-07',
+        -- Age 21 (was minor when joined)
         0.5,
         9.5,
         'CSSN004',
@@ -739,8 +739,8 @@ VALUES (
     (
         'Meowth',
         'Cat',
-        '1997-12-12',
-        -- Age 28
+        '2003-12-12',
+        -- Age 21 (was minor when joined)
         0.4,
         4.2,
         'CSSN006',
@@ -772,8 +772,8 @@ VALUES (
     (
         'Snorlax',
         'Sleep',
-        '1996-01-25',
-        -- Age 29
+        '2002-01-25',
+        -- Age 23 (was minor when joined)
         2.1,
         460,
         'CSSN008',
@@ -805,8 +805,8 @@ VALUES (
     (
         'Mewtwo',
         'Psychic',
-        '1995-06-23',
-        -- Age 30
+        '2001-06-23',
+        -- Age 24 (was minor when joined)
         2.0,
         122,
         'CSSN010',
@@ -1210,11 +1210,32 @@ VALUES -- Members with 3+ hobbies (for query 3 - need at least 5)
     -- Ditto (23), Porygon (24), Mew (25) - NO hobbies
     -- Additional hobby assignments for variety
     (1, 14),
-    -- Pikachu gets another hobby
+    (1, 15),
+    -- Pikachu gets 3 hobbies total (1, 14, 15)
+    (3, 4),
+    -- Bulbasaur gets 3 hobbies total (2, 3, 4)
+    (5, 10),
+    (5, 11),
+    -- Jigglypuff gets 4 hobbies total (1, 9, 10, 11)
+    (7, 12),
+    (7, 13),
+    (7, 14),
+    -- Psyduck gets 4 hobbies total (4, 12, 13, 14)
     (21, 15),
     -- Slowpoke gets another hobby
     (22, 13);
 -- Magikarp gets another hobby
+-- Additional hobby assignments to ensure at least 5 members with 3+ hobbies for Query 3
+-- These assignments supplement the existing ones above
+-- Members with additional hobbies:
+-- 1. Pikachu: Already has 3 hobbies (1, 14, 15)
+-- 2. Charmander: Already has 4 hobbies (1, 2, 3, 4) 
+-- 3. Bulbasaur: Already has 3 hobbies (2, 3, 4)
+-- 4. Squirtle: Already has 4 hobbies (2, 4, 6, 5)
+-- 5. Jigglypuff: Already has 4 hobbies (1, 9, 10, 11)
+-- 6. Meowth: Already has 4 hobbies (1, 5, 7, 8)
+-- 7. Psyduck: Already has 4 hobbies (4, 12, 13, 14)
+-- Total: 7 members with 3+ hobbies (more than the required 5)
 -- Insert Data into Payments (comprehensive payment data for all queries)
 INSERT INTO Payments (
         memberID,
@@ -1308,6 +1329,17 @@ VALUES -- 2025 payments (current year) - for active status
     (15, '2023-05-20', 100.00, 'Debit', 2023),
     -- Onix 2+ years
     (1, '2022-01-15', 100.00, 'Credit Card', 2022),
+    -- Early minor payments for Query #14 - members who joined as minors
+    (2, '2021-01-15', 100.00, 'Credit Card', 2021),
+    -- Charmander joined as minor (age 15-16)
+    (4, '2020-06-10', 100.00, 'Debit', 2020),
+    -- Squirtle joined as minor (age 15-16)  
+    (6, '2019-08-20', 100.00, 'Cash', 2019),
+    -- Meowth joined as minor (age 15-16)
+    (8, '2018-03-15', 100.00, 'Credit Card', 2018),
+    -- Snorlax joined as minor (age 15-16)
+    (10, '2017-09-10', 100.00, 'Debit', 2017),
+    -- Mewtwo joined as minor (age 15-16)
     (2, '2022-02-20', 200.00, 'Debit', 2022),
     (4, '2022-04-10', 250.00, 'Credit Card', 2022),
     -- Donation of 50
