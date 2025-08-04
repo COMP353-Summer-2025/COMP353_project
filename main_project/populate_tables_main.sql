@@ -1,4 +1,13 @@
--- Data population for COMP353 Main Project additional tables
+-- COMP353 Main Project - Summer 2025  
+-- Database Application System for Montréal Volleyball Club (MVC)
+-- Data population script for additional tables including Teams, TeamFormations,
+-- TeamPlayers, EmailLogs, and SecondaryFamilyMembers
+-- This extends the warm-up project with comprehensive test data for:
+-- - Team management across multiple locations
+-- - Game and training session formations 
+-- - Player assignments with proper role distributions
+-- - Email logging for automated weekly notifications
+-- - Secondary family member relationships
 -- Clear existing data to prevent conflicts and ensure fresh data
 DELETE FROM SecondaryFamilyMembers;
 DELETE FROM EmailLogs;

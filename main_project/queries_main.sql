@@ -1,9 +1,47 @@
--- COMP353 Main Project Queries
+-- COMP353 Main Project - Summer 2025
+-- Database Application System for Montréal Volleyball Club (MVC)
+-- SQL Queries Implementation File
+-- 
+-- This file contains all the required DDL and DML SQL queries for the main project
+-- which extends the warm-up project with advanced functionalities including:
+-- 
+-- CRUD Operations (Queries 1-7):
+--   1. Create/Delete/Edit/Display a Location
+--   2. Create/Delete/Edit/Display a Personnel  
+--   3. Create/Delete/Edit/Display a FamilyMember (Primary/Secondary)
+--   4. Create/Delete/Edit/Display a ClubMember (Major/Minor)
+--   5. Create/Delete/Edit/Display a TeamFormation
+--   6. Assign/Delete/Edit a club member to a team formation
+--   7. Make payment for a club member
+--
+-- Reporting Queries (Queries 8-15):
+--   8. Complete location details with member and team statistics
+--   9. Family member and associated club member details
+--  10. Team formations for specific location and time period
+--  11. Inactive members with multiple location history
+--  12. Location training/game session statistics report
+--  13. Active members never assigned to formations
+--  14. Active major members who started as minors
+--  15. Active members only assigned as setters
+--
+-- Project Requirements:
+-- - Supports members aged 11+ (Minor: 11-17, Major: 18+)
+-- - Annual fees: $100 (Minor), $200 (Major)
+-- - Team formations for games and training sessions
+-- - Automated email notifications for weekly schedules
+-- - Gender-separated teams with specific volleyball positions
+-- - Multi-location club management with head/branch structure
 -- ==========================================================================
--- CRUD OPERATIONS (Queries 1-7)
+-- CRUD OPERATIONS (Queries 1-7) - DDL/DML Commands Implementation
+-- These queries demonstrate the core database operations required for the MVC system
+-- ==========================================================================
 -- ==========================================================================
 -- Query #1: Create/Delete/Edit/Display a Location
--- CREATE Location (with timestamp to ensure unique name)
+-- Locations can be either 'Head' (main office) or 'Branch' (satellite locations)
+-- Each location has capacity limits and serves specific geographical areas
+-- ==========================================================================
+-- CREATE Location - Insert a new volleyball club location
+-- Uses timestamp to ensure unique naming for demonstration purposes
 INSERT INTO Locations (
         type,
         name,
@@ -29,7 +67,8 @@ VALUES (
         'http://sampleclub.com',
         75
     );
--- DISPLAY all Locations
+-- DISPLAY all Locations - Retrieve complete location information
+-- Shows all club locations with their operational details
 SELECT locationID,
     type,
     name,
@@ -42,7 +81,8 @@ SELECT locationID,
     maxCapacity
 FROM Locations
 ORDER BY name ASC;
--- EDIT Location (Update example)
+-- EDIT Location - Update existing location information
+-- Demonstrates modification of location capacity and contact details
 UPDATE Locations
 SET address = '456 Updated Sample St',
     maxCapacity = 80,
@@ -50,11 +90,16 @@ SET address = '456 Updated Sample St',
 WHERE name LIKE 'Sample Club %'
     AND name REGEXP '[0-9]{8}_[0-9]{6}$'
 LIMIT 1;
--- DELETE Location (Note: This might fail due to foreign key constraints)
+-- DELETE Location - Remove location from system
+-- Note: May fail due to foreign key constraints if location has active members/teams
 -- DELETE FROM Locations WHERE name LIKE 'Sample Club %' AND name REGEXP '[0-9]{8}_[0-9]{6}$' LIMIT 1;
 -- ==========================================================================
--- Query #2: Create/Delete/Edit/Display a Personnel
--- CREATE Personnel (with timestamp to ensure unique SSN)
+-- Query #2: Create/Delete/Edit/Display Personnel  
+-- Personnel include coaches, administrators, and other staff members
+-- Each personnel member can work at multiple locations with different roles
+-- ==========================================================================
+-- CREATE Personnel - Add new staff member to the system
+-- Uses timestamp to ensure unique identification numbers
 INSERT INTO Personnel (
         firstName,
         lastName,
@@ -89,7 +134,8 @@ VALUES (
         'Coach',
         'Salaried'
     );
--- DISPLAY all Personnel
+-- DISPLAY all Personnel - Show complete staff directory
+-- Lists all personnel with their roles and contact information
 SELECT personnelID,
     firstName,
     lastName,
@@ -107,17 +153,24 @@ SELECT personnelID,
 FROM Personnel
 ORDER BY lastName ASC,
     firstName ASC;
--- EDIT Personnel (Update example)
+-- EDIT Personnel - Update staff member information
+-- Demonstrates role changes and contact information updates
 UPDATE Personnel
 SET role = 'Assistant Coach',
     telephoneNumber = '555-8888',
     email = 'jane.doe.updated@club.com'
 WHERE socialSecurityNumber = 'SSN999';
--- DELETE Personnel (Note: This might fail due to foreign key constraints)
+-- DELETE Personnel - Remove staff member from system  
+-- Note: May fail due to foreign key constraints if personnel is referenced elsewhere
 -- DELETE FROM Personnel WHERE socialSecurityNumber = 'SSN999';
 -- ==========================================================================
--- Query #3: Create/Delete/Edit/Display a FamilyMember (Primary/Secondary)
--- CREATE Primary Family Member (with timestamp to ensure unique SSN)
+-- Query #3: Create/Delete/Edit/Display FamilyMember (Primary/Secondary)
+-- Family members are required for minor club members (ages 11-17)
+-- Primary family members can have multiple secondary family members
+-- Secondary family members represent spouses, children, etc. of primary members
+-- ==========================================================================
+-- CREATE Primary Family Member - Register adult family member
+-- Primary family members can sponsor minor club members
 INSERT INTO FamilyMembers (
         firstName,
         lastName,
@@ -148,7 +201,8 @@ VALUES (
             '@family.com'
         )
     );
--- CREATE Secondary Family Member (with timestamp to ensure unique SSN)
+-- CREATE Secondary Family Member - Register related family member
+-- Links to primary family member with defined relationship
 INSERT INTO SecondaryFamilyMembers (
         firstName,
         lastName,
@@ -189,7 +243,8 @@ VALUES (
             LIMIT 1
         )
     );
--- DISPLAY Primary Family Members
+-- DISPLAY Primary Family Members - Show registered primary family members
+-- Lists all primary family members who can sponsor minor club members
 SELECT familyMemberID,
     firstName,
     lastName,
@@ -205,7 +260,8 @@ SELECT familyMemberID,
 FROM FamilyMembers
 ORDER BY lastName ASC,
     firstName ASC;
--- DISPLAY Secondary Family Members
+-- DISPLAY Secondary Family Members - Show family relationships
+-- Lists secondary family members with their relationship to primary members
 SELECT sfm.secondaryFamilyMemberID,
     sfm.firstName,
     sfm.lastName,
@@ -225,14 +281,14 @@ FROM SecondaryFamilyMembers sfm
     JOIN FamilyMembers fm ON sfm.primaryFamilyMemberID = fm.familyMemberID
 ORDER BY fm.lastName ASC,
     sfm.lastName ASC;
--- EDIT Primary Family Member
+-- EDIT Primary Family Member - Update primary family member information
 UPDATE FamilyMembers
 SET telephoneNumber = '555-5555',
     email = 'john.parent.updated@family.com'
 WHERE socialSecurityNumber LIKE 'FSSN%'
 ORDER BY familyMemberID DESC
 LIMIT 1;
--- EDIT Secondary Family Member
+-- EDIT Secondary Family Member - Update secondary family member information
 UPDATE SecondaryFamilyMembers
 SET telephoneNumber = '555-4444',
     email = 'sarah.parent.updated@family.com'
@@ -240,8 +296,13 @@ WHERE socialSecurityNumber LIKE 'SFSSN%'
 ORDER BY secondaryFamilyMemberID DESC
 LIMIT 1;
 -- ==========================================================================
--- Query #4: Create/Delete/Edit/Display a ClubMember (Major/Minor)
--- CREATE Minor Club Member (with timestamp to ensure unique SSN)
+-- Query #4: Create/Delete/Edit/Display ClubMember (Major/Minor)
+-- Club members are the core participants in volleyball activities
+-- Minor members (11-17 years) require family member sponsorship and pay $100/year
+-- Major members (18+ years) are independent and pay $200/year
+-- ==========================================================================
+-- CREATE Minor Club Member - Register young volleyball player (ages 11-17)
+-- Minor members must be associated with a registered family member
 INSERT INTO ClubMembers (
         firstName,
         lastName,
@@ -274,7 +335,8 @@ VALUES (
         1,
         TRUE
     );
--- CREATE Major Club Member (with timestamp to ensure unique SSN)
+-- CREATE Major Club Member - Register adult volleyball player (18+ years)
+-- Major members are independent and can participate without family sponsorship
 INSERT INTO ClubMembers (
         firstName,
         lastName,
@@ -307,7 +369,8 @@ VALUES (
         2,
         FALSE
     );
--- DISPLAY all Club Members
+-- DISPLAY all Club Members - Show complete member roster
+-- Includes age calculation and member type classification
 SELECT memberID,
     firstName,
     lastName,
@@ -331,14 +394,19 @@ SELECT memberID,
 FROM ClubMembers
 ORDER BY lastName ASC,
     firstName ASC;
--- EDIT Club Member
+-- EDIT Club Member - Update member information
 UPDATE ClubMembers
 SET telephoneNumber = '555-1111',
     address = '333 Updated Youth St'
 WHERE socialSecurityNumber = 'CSSN999';
 -- ==========================================================================
--- Query #5: Create/Delete/Edit/Display a TeamFormation
--- CREATE Team Formation
+-- Query #5: Create/Delete/Edit/Display TeamFormation
+-- Team formations organize games and training sessions between two teams
+-- Each formation includes session details, participating teams, and scores
+-- Teams must be gender-separated and from appropriate locations
+-- ==========================================================================
+-- CREATE Team Formation - Schedule a game or training session
+-- Links two teams for competitive play or practice
 INSERT INTO TeamFormations (
         locationID,
         sessionType,
@@ -361,7 +429,8 @@ VALUES (
         25,
         23
     );
--- DISPLAY Team Formations
+-- DISPLAY Team Formations - Show scheduled games and training sessions
+-- Includes team information, session details, and match results
 SELECT tf.formationID,
     tf.locationID,
     l.name AS locationName,
@@ -385,7 +454,7 @@ FROM TeamFormations tf
     JOIN Teams t2 ON tf.team2ID = t2.teamID
 ORDER BY tf.sessionDate DESC,
     tf.sessionTime DESC;
--- EDIT Team Formation (Update scores)
+-- EDIT Team Formation - Update formation details (typically scores after completion)
 UPDATE TeamFormations
 SET scoreTeam1 = 25,
     scoreTeam2 = 20
@@ -397,8 +466,13 @@ WHERE formationID = (
             ) AS temp
     );
 -- ==========================================================================
--- Query #6: Assign/Delete/Edit a club member to a team formation
--- ASSIGN club member to team formation
+-- Query #6: Assign/Delete/Edit club member to team formation
+-- Team assignments specify player positions for each formation
+-- Volleyball positions: Setter, Outside Hitter, Opposite Hitter, Middle Blocker, 
+-- Defensive Specialist, Libero
+-- Conflict checking should prevent overlapping assignments (3-hour minimum gap)
+-- ==========================================================================
+-- ASSIGN club member to team formation - Add player to formation with specific role
 INSERT INTO TeamPlayers (formationID, clubMemberID, role)
 VALUES (
         (
@@ -417,7 +491,8 @@ VALUES (
         2,
         'Outside Hitter'
     );
--- DISPLAY team assignments
+-- DISPLAY team assignments - Show player assignments for formations
+-- Lists players with their positions for each scheduled formation
 SELECT tp.formationID,
     tf.sessionDate,
     tf.sessionTime,
@@ -436,7 +511,7 @@ FROM TeamPlayers tp
 ORDER BY tf.sessionDate DESC,
     tf.sessionTime DESC,
     tp.role ASC;
--- EDIT team assignment (change role)
+-- EDIT team assignment - Change player's position in formation
 UPDATE TeamPlayers
 SET role = 'Libero'
 WHERE formationID = (
@@ -444,19 +519,25 @@ WHERE formationID = (
         FROM TeamFormations
     )
     AND clubMemberID = 1;
--- DELETE team assignment
+-- DELETE team assignment - Remove player from formation
 -- DELETE FROM TeamPlayers 
 -- WHERE formationID = (SELECT MAX(formationID) FROM TeamFormations) 
 --   AND clubMemberID = 2;
--- Attempt to assign conflicting assignment (same member, overlapping time)
--- This should demonstrate conflict checking (if triggers were implemented)
+-- Conflict Assignment Example - Attempt overlapping assignments 
+-- System should reject assignments with less than 3-hour gap on same day
+-- This demonstrates the need for trigger-based conflict checking
 -- INSERT INTO TeamFormations (locationID, sessionType, sessionDate, sessionTime, sessionAddress, teamID, team2ID)
 -- VALUES (2, 'Game', '2025-08-15', '18:30:00', '25 Water Rd, Cerulean City', 3, 4);
 -- INSERT INTO TeamPlayers (formationID, clubMemberID, role)
 -- VALUES ((SELECT MAX(formationID) FROM TeamFormations), 1, 'Setter');
 -- ==========================================================================
--- Query #7: Make payment for a club member
--- CREATE Payment for Minor Member
+-- Query #7: Make payment for club member
+-- Payment system tracks membership fees and donations
+-- Minor members: $100/year, Major members: $200/year
+-- Excess payments are considered donations to the club
+-- Members must be current on payments to participate in activities
+-- ==========================================================================
+-- CREATE Payment for Minor Member - Process membership fee payment
 INSERT INTO Payments (
         memberID,
         paymentDate,
@@ -475,7 +556,8 @@ VALUES (
         'Credit Card',
         YEAR(CURDATE())
     );
--- CREATE Payment for Major Member with Donation
+-- CREATE Payment for Major Member - Process payment with donation component
+-- Amount exceeds required fee, so excess becomes donation
 INSERT INTO Payments (
         memberID,
         paymentDate,
@@ -494,7 +576,8 @@ VALUES (
         'Debit',
         YEAR(CURDATE())
     );
--- DISPLAY payments
+-- DISPLAY payments - Show payment history with fee calculations
+-- Calculates required fees and donation amounts based on member type
 SELECT p.paymentID,
     cm.memberID,
     cm.firstName,
@@ -517,7 +600,7 @@ SELECT p.paymentID,
 FROM Payments p
     JOIN ClubMembers cm ON p.memberID = cm.memberID
 ORDER BY p.paymentDate DESC;
--- EDIT Payment (update amount)
+-- EDIT Payment - Update payment amount (typically for installment adjustments)
 UPDATE Payments
 SET paymentAmount = 120.00
 WHERE memberID = (
@@ -527,7 +610,18 @@ WHERE memberID = (
     )
     AND membershipYear = YEAR(CURDATE());
 -- ==========================================================================
--- Query #8: Get complete details for every location in the system
+-- REPORTING QUERIES (Queries 8-15) - Advanced Data Analysis
+-- These queries provide comprehensive reports for club management and operations
+-- ==========================================================================
+-- ==========================================================================
+-- Query #8: Complete location details with member and team statistics
+-- Provides comprehensive location overview including:
+-- - Location details (address, contact, capacity, type)
+-- - General manager information  
+-- - Member counts by type (minor/major)
+-- - Associated team counts
+-- Results sorted by province, then city as per requirements
+-- ==========================================================================
 SELECT l.locationID,
     l.name AS locationName,
     l.address,
@@ -576,7 +670,13 @@ GROUP BY l.locationID,
 ORDER BY l.province ASC,
     l.city ASC;
 -- ==========================================================================
--- Query #9: For a given family member, get details of secondary family member and club members
+-- Query #9: Family member details with associated club members
+-- For a given primary family member, shows:
+-- - Secondary family member details (spouse, children, etc.)
+-- - All associated club members with complete information
+-- - Relationship information between family and club members
+-- Essential for managing minor member sponsorship requirements
+-- ==========================================================================
 SET @GIVEN_FAMILY_MEMBER_ID = 1;
 SELECT sfm.firstName AS secondaryFirstName,
     sfm.lastName AS secondaryLastName,
@@ -600,7 +700,14 @@ FROM FamilyMembers fm
 WHERE fm.familyMemberID = @GIVEN_FAMILY_MEMBER_ID
 ORDER BY cm.memberID;
 -- ==========================================================================
--- Query #10: Get session details for a specific location within a date range
+-- Query #10: Team formation details for specific location and time period
+-- Provides detailed session information including:
+-- - Session timing and location details
+-- - Head coach information
+-- - Team names and scores (null for future sessions)
+-- - Complete player roster with positions
+-- Critical for weekly email notification system and session management
+-- ==========================================================================
 SET @GIVEN_LOCATION_ID = 1;
 SET @START_DATE = '2025-01-01';
 SET @END_DATE = '2025-05-31';
@@ -633,8 +740,13 @@ WHERE tf.locationID = @GIVEN_LOCATION_ID
 ORDER BY tf.sessionDate,
     tf.sessionTime;
 -- ==========================================================================
--- Query #11: Get details of club members who are currently inactive and have been 
--- associated with at least two different locations and are members for at least two years
+-- Query #11: Inactive members with multi-location history
+-- Identifies members who are:
+-- - Currently inactive (unpaid previous year fees)
+-- - Have been associated with at least 2 different locations
+-- - Have been members for at least 2 years
+-- Important for member retention analysis and re-engagement campaigns
+-- ==========================================================================
 SELECT cm.memberID,
     cm.firstName,
     cm.lastName
@@ -666,7 +778,14 @@ WHERE -- Condition 1: Must be a member for at least two years
     ) >= 2
 ORDER BY cm.memberID;
 -- ==========================================================================
--- Query #12: Get location statistics for training and game sessions within a date range
+-- Query #12: Location activity statistics for specified time period
+-- Generates comprehensive location performance report including:
+-- - Training session counts and participant numbers
+-- - Game session counts and participant numbers  
+-- - Filters locations with at least 4 game sessions (high activity threshold)
+-- - Sorted by game session count (most active locations first)
+-- Useful for resource allocation and location performance evaluation
+-- ==========================================================================
 SET @START_DATE = '2025-01-01';
 SET @END_DATE = '2025-05-31';
 SELECT l.name AS locationName,
@@ -701,7 +820,13 @@ GROUP BY l.locationID,
 HAVING totalGameSessions >= 4
 ORDER BY totalGameSessions DESC;
 -- ==========================================================================
--- Query #13: Get report on active club members who have never been assigned to any formation
+-- Query #13: Active members never assigned to team formations
+-- Identifies members who are:
+-- - Current on membership payments (active status)
+-- - Have never been assigned to any team formation
+-- Useful for member engagement and ensuring all active members participate
+-- Results sorted by location and age for targeted outreach
+-- ==========================================================================
 SELECT cm.memberID AS clubMembershipNumber,
     cm.firstName,
     cm.lastName,
@@ -733,8 +858,14 @@ WHERE -- Active members (paid current year fees)
 ORDER BY l.name ASC,
     age ASC;
 -- ==========================================================================
--- Query #14: Delete clubs who have no members and no personnel assigned to any location
--- Delete ClubMembers first due to FK constraints (though there should be none)
+-- Query #14: Delete locations with no members or personnel
+-- Administrative cleanup operation that removes:
+-- - Locations with no assigned club members
+-- - Locations with no assigned personnel  
+-- - Maintains referential integrity by deleting in proper order
+-- Important for database maintenance and resource optimization
+-- ==========================================================================
+-- Delete ClubMembers first due to FK constraints (should be none for empty locations)
 DELETE cm
 FROM ClubMembers cm
 WHERE cm.locationID IN (
@@ -748,7 +879,7 @@ WHERE cm.locationID IN (
                 FROM Personnel p
             )
     );
--- Delete Personnel (though there should be none)
+-- Delete Personnel assignments (should be none for empty locations)
 DELETE p
 FROM Personnel p
 WHERE p.locationID IN (
@@ -763,7 +894,7 @@ WHERE p.locationID IN (
                 WHERE p2.personnelID != p.personnelID -- Exclude self from check
             )
     );
--- Finally delete the Locations
+-- Finally delete the empty Locations
 DELETE l
 FROM Locations l
 WHERE l.locationID NOT IN (
@@ -774,7 +905,14 @@ WHERE l.locationID NOT IN (
         FROM Personnel p
     );
 -- ==========================================================================
--- Query #15: Get report on active club members who have only been assigned as setters
+-- Query #15: Active members exclusively assigned as setters
+-- Identifies members who are:
+-- - Current on membership payments (active status)  
+-- - Have been assigned to at least one formation as setter
+-- - Have NEVER been assigned to any other position
+-- Useful for analyzing position specialization and player development
+-- Results sorted by location and age for training program planning
+-- ==========================================================================
 SELECT cm.memberID AS clubMembershipNumber,
     cm.firstName,
     cm.lastName,
@@ -825,9 +963,11 @@ GROUP BY cm.memberID,
 ORDER BY l.name ASC,
     age ASC;
 -- ==========================================================================
--- COUNT QUERIES FOR TABLE VERIFICATION (Optional - for debugging purposes)
+-- DATABASE VERIFICATION QUERIES - System Health and Data Integrity
+-- These queries provide comprehensive table counts for database maintenance
+-- and verification that all tables are properly populated with test data
 -- ==========================================================================
--- Show all table counts in a single result set for verification
+-- Show all table counts in a single result set for system verification
 SELECT 'Locations' as TableName,
     COUNT(*) as RecordCount
 FROM Locations

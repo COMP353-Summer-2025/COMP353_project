@@ -1,5 +1,11 @@
--- Additional tables for COMP353 Main Project
--- This file creates the missing tables based on the PDF requirements
+-- COMP353 Main Project - Summer 2025
+-- Database Application System for Montréal Volleyball Club (MVC)
+-- This file creates the additional tables required for the main project
+-- extending the warm-up project with new functionalities including:
+-- - Team management and formations
+-- - Email logging system for automated notifications
+-- - Secondary family member tracking
+-- - Support for games, training sessions, and player assignments
 -- Drop tables if they exist (in reverse order due to foreign key dependencies)
 DROP TABLE IF EXISTS SecondaryFamilyMembers;
 DROP TABLE IF EXISTS EmailLogs;
