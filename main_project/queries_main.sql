@@ -868,42 +868,40 @@ ORDER BY l.name ASC,
 -- Delete ClubMembers first due to FK constraints (should be none for empty locations)
 DELETE cm
 FROM ClubMembers cm
-WHERE cm.locationID IN (
-        SELECT l.locationID
-        FROM Locations l
-        WHERE l.locationID NOT IN (
-                SELECT DISTINCT cm2.locationID
-                FROM ClubMembers cm2
-                UNION
-                SELECT DISTINCT p.locationID
-                FROM Personnel p
-            )
-    );
+    LEFT JOIN (
+        SELECT DISTINCT cm2.locationID
+        FROM ClubMembers cm2
+        UNION
+        SELECT DISTINCT pl.locationID
+        FROM PersonnelLocation pl
+        WHERE pl.endDate IS NULL
+    ) AS active_locations ON cm.locationID = active_locations.locationID
+WHERE active_locations.locationID IS NULL;
 -- Delete Personnel assignments (should be none for empty locations)
-DELETE p
-FROM Personnel p
-WHERE p.locationID IN (
-        SELECT l.locationID
-        FROM Locations l
-        WHERE l.locationID NOT IN (
-                SELECT DISTINCT cm.locationID
-                FROM ClubMembers cm
-                UNION
-                SELECT DISTINCT p2.locationID
-                FROM Personnel p2
-                WHERE p2.personnelID != p.personnelID -- Exclude self from check
-            )
-    );
--- Finally delete the empty Locations
-DELETE l
-FROM Locations l
-WHERE l.locationID NOT IN (
+DELETE pl
+FROM PersonnelLocation pl
+    LEFT JOIN (
         SELECT DISTINCT cm.locationID
         FROM ClubMembers cm
         UNION
-        SELECT DISTINCT p.locationID
-        FROM Personnel p
-    );
+        SELECT DISTINCT pl2.locationID
+        FROM PersonnelLocation pl2
+        WHERE pl2.endDate IS NULL
+    ) AS active_locations ON pl.locationID = active_locations.locationID
+WHERE active_locations.locationID IS NULL
+    AND pl.endDate IS NULL;
+-- Finally delete the empty Locations
+DELETE l
+FROM Locations l
+    LEFT JOIN (
+        SELECT DISTINCT cm.locationID
+        FROM ClubMembers cm
+        UNION
+        SELECT DISTINCT pl.locationID
+        FROM PersonnelLocation pl
+        WHERE pl.endDate IS NULL
+    ) AS active_locations ON l.locationID = active_locations.locationID
+WHERE active_locations.locationID IS NULL;
 -- ==========================================================================
 -- Query #15: Active members exclusively assigned as setters
 -- Identifies members who are:
