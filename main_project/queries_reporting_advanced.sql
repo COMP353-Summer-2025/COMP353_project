@@ -601,18 +601,142 @@ ORDER BY l.name ASC,
     p.role ASC,
     p.firstName ASC,
     p.lastName ASC;
+
+DROP TRIGGER IF EXISTS PreventTimeConflict;
+DROP TRIGGER IF EXISTS LogFormationAssignmentEmail;  
+DROP TRIGGER IF EXISTS PaymentReminderEmail;
+
 -- ==========================================================================
--- Query #20: Trigger demonstrations 
--- This query demonstrates trigger functionality by showing email logs
--- that would be generated automatically by triggers when certain events occur
--- The trigger should automatically log emails when:
--- 1. New members are added to formations
--- 2. Payment reminders are needed
--- 3. Schedule changes are made
--- 4. Member status changes occur
--- 5. Formation updates are made
+-- Query #20: Trigger demonstrations - FIXED VERSION
+-- This section implements triggers for automated business logic enforcement
 -- ==========================================================================
-SELECT el.emailDate,
+
+-- First, change the delimiter to allow semicolons within trigger bodies
+DELIMITER $$
+
+-- Trigger #1: Prevent Time Conflict for Team Player Assignments
+-- This trigger ensures no club member can be assigned to formations within 3 hours of each other
+CREATE TRIGGER PreventTimeConflict 
+    BEFORE INSERT ON TeamPlayers 
+    FOR EACH ROW 
+BEGIN
+    DECLARE newFormationDate DATETIME;
+    DECLARE conflictingDate DATETIME;
+    
+    -- Get the sessionDate of the new formation
+    SELECT sessionDate INTO newFormationDate
+    FROM TeamFormations
+    WHERE formationID = NEW.formationID;
+    
+    -- Check if the club member is already in a formation within ±3 hours of the new one
+    SELECT TF.sessionDate INTO conflictingDate
+    FROM TeamPlayers TP
+        JOIN TeamFormations TF ON TP.formationID = TF.formationID
+    WHERE TP.clubMemberID = NEW.clubMemberID
+        AND ABS(TIMESTAMPDIFF(HOUR, TF.sessionDate, newFormationDate)) < 3
+    LIMIT 1;
+    
+    -- If a conflict is found, prevent the insert
+    IF conflictingDate IS NOT NULL THEN 
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Conflict: Player already assigned to a formation within 3 hours.';
+    END IF;
+END$$
+
+-- Trigger #2: Automatic Email Notification for New Formation Assignments
+-- This trigger automatically logs email notifications when players are added to formations
+CREATE TRIGGER LogFormationAssignmentEmail
+    AFTER INSERT ON TeamPlayers 
+    FOR EACH ROW 
+BEGIN
+    DECLARE memberEmail VARCHAR(255);
+    DECLARE sessionInfo VARCHAR(500);
+    
+    -- Get member email from family relations
+    SELECT fm.email INTO memberEmail
+    FROM MemberFamilyRelations mfr
+        JOIN FamilyMembers fm ON mfr.familyMemberID = fm.familyMemberID
+    WHERE mfr.memberID = NEW.clubMemberID
+    LIMIT 1;
+    
+    -- Get session information
+    SELECT CONCAT(
+        'Session on ',
+        tf.sessionDate,
+        ' at ',
+        tf.sessionAddress,
+        ' - Role: ',
+        NEW.role
+    ) INTO sessionInfo
+    FROM TeamFormations tf
+    WHERE tf.formationID = NEW.formationID;
+    
+    -- Log email notification
+    INSERT INTO EmailLogs (
+        emailDate,
+        receiverMemberID,
+        subject,
+        bodyPreview
+    )
+    VALUES (
+        NOW(),
+        NEW.clubMemberID,
+        'Formation Assignment Notification',
+        CONCAT(
+            'You have been assigned to a new formation. ',
+            sessionInfo
+        )
+    );
+END$$
+
+-- Trigger #3: Payment Reminder Email Automation - FIXED VERSION
+-- This trigger logs payment reminder emails when payments are overdue
+CREATE TRIGGER PaymentReminderEmail
+    AFTER UPDATE ON ClubMembers 
+    FOR EACH ROW 
+BEGIN
+    DECLARE totalPaid DECIMAL(10, 2);
+    DECLARE requiredAmount DECIMAL(10, 2);
+    
+    -- Calculate total paid for current year
+    SELECT COALESCE(SUM(paymentAmount), 0) INTO totalPaid
+    FROM Payments
+    WHERE memberID = NEW.memberID
+        AND membershipYear = YEAR(CURDATE());
+    
+    -- Determine required amount
+    SET requiredAmount = CASE
+        WHEN NEW.isMinor THEN 100
+        ELSE 200
+    END;
+    
+    -- If payment is insufficient, log reminder email
+    IF totalPaid < requiredAmount THEN
+        INSERT INTO EmailLogs (
+            emailDate,
+            receiverMemberID,
+            subject,
+            bodyPreview
+        )
+        VALUES (
+            NOW(),
+            NEW.memberID,
+            'Payment Reminder - Annual Membership Fees',
+            CONCAT(
+                'Your annual membership payment is overdue. Amount due: $',
+                (requiredAmount - totalPaid)
+            )
+        );
+    END IF;
+END$$
+
+-- Reset delimiter back to semicolon
+DELIMITER ;
+
+-- Query to demonstrate trigger functionality by showing email logs
+-- This shows the results of automated trigger-generated emails
+SELECT 
+    el.emailDate,
     el.receiverMemberID,
     el.subject,
     el.bodyPreview,

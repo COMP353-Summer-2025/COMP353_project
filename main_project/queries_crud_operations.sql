@@ -149,10 +149,13 @@ UPDATE Personnel
 SET role = 'Assistant Coach',
     telephoneNumber = '555-8888',
     email = 'jane.doe.updated@club.com'
-WHERE socialSecurityNumber = 'SSN999';
+WHERE socialSecurityNumber LIKE 'SSN%'
+    AND socialSecurityNumber REGEXP '[0-9]{14}$'
+ORDER BY personnelID DESC
+LIMIT 1;
 -- Query 2d: DELETE Personnel - Remove staff member from system  
 -- Note: May fail due to foreign key constraints if personnel is referenced elsewhere
--- DELETE FROM Personnel WHERE socialSecurityNumber = 'SSN999';
+-- DELETE FROM Personnel WHERE socialSecurityNumber LIKE 'SSN%' AND socialSecurityNumber REGEXP '[0-9]{14}$' ORDER BY personnelID DESC LIMIT 1;
 -- ==========================================================================
 -- Query #3: Create/Delete/Edit/Display FamilyMember (Primary/Secondary)
 -- Family members are required for minor club members (ages 11-17)
@@ -388,7 +391,10 @@ ORDER BY lastName ASC,
 UPDATE ClubMembers
 SET telephoneNumber = '555-1111',
     address = '333 Updated Youth St'
-WHERE socialSecurityNumber = 'CSSN999';
+WHERE socialSecurityNumber LIKE 'CSSN%'
+    AND socialSecurityNumber REGEXP '[0-9]{14}$'
+ORDER BY memberID DESC
+LIMIT 1;
 -- ==========================================================================
 -- Query #5: Create/Delete/Edit/Display TeamFormation
 -- Team formations organize games and training sessions between two teams
@@ -539,7 +545,7 @@ VALUES (
         (
             SELECT memberID
             FROM ClubMembers
-            WHERE socialSecurityNumber = 'CSSN999'
+            WHERE socialSecurityNumber = 'CSSN001'
         ),
         CURDATE(),
         100.00,
@@ -559,7 +565,7 @@ VALUES (
         (
             SELECT memberID
             FROM ClubMembers
-            WHERE socialSecurityNumber = 'CSSN888'
+            WHERE socialSecurityNumber = 'CSSN002'
         ),
         CURDATE(),
         250.00,
@@ -596,6 +602,6 @@ SET paymentAmount = 120.00
 WHERE memberID = (
         SELECT memberID
         FROM ClubMembers
-        WHERE socialSecurityNumber = 'CSSN999'
+        WHERE socialSecurityNumber = 'CSSN001'
     )
     AND membershipYear = YEAR(CURDATE());
