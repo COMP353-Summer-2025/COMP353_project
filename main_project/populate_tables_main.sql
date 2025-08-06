@@ -436,3 +436,11 @@ INSERT INTO Payments (memberID, paymentDate, paymentAmount, paymentMethod, membe
 (2016, '2025-03-05', 25.00, 'Credit Card', 2025),
 (2017, '2025-01-30', 45.00, 'Debit', 2025),
 (2018, '2025-02-10', 25.00, 'Cash', 2025);
+
+DROP TRIGGER IF EXISTS PreventTimeConflict;
+DROP TRIGGER IF EXISTS LogFormationAssignmentEmail;
+DROP TRIGGER IF EXISTS PaymentReminderEmail;
+
+UPDATE ClubMembers
+SET email = CONCAT(LOWER(firstName), '.', LOWER(lastName), '@example.com')
+WHERE memberID > 0;
