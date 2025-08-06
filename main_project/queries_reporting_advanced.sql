@@ -766,4 +766,4 @@ LIMIT 10;
 -- ==========================================================================
 -- test trigger
 INSERT INTO TeamPlayers (formationID, clubMemberID, role)
-VALUES (13, 1, 'Setter'); 
+VALUES (1, 1, 'Setter');
