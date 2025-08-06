@@ -266,7 +266,7 @@ INSERT INTO SecondaryFamilyMembers (firstName, lastName, dateOfBirth, socialSecu
  (305, 405, 'Setter');
 
 --  Query #14 insert values
-q14: -- Club Members (all now majors, born before 2007, joined when they were minors)
+-- Club Members (all now majors, born before 2007, joined when they were minors)
 INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, isMinor, locationID,
     socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode)
 VALUES
