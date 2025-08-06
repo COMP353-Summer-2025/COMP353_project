@@ -602,14 +602,14 @@ ORDER BY l.name ASC,
     p.firstName ASC,
     p.lastName ASC;
 
-DROP TRIGGER IF EXISTS PreventTimeConflict;
-DROP TRIGGER IF EXISTS LogFormationAssignmentEmail;  
-DROP TRIGGER IF EXISTS PaymentReminderEmail;
 
 -- ==========================================================================
 -- Query #20: Trigger demonstrations - FIXED VERSION
 -- This section implements triggers for automated business logic enforcement
 -- ==========================================================================
+DROP TRIGGER IF EXISTS PreventTimeConflict;
+DROP TRIGGER IF EXISTS LogFormationAssignmentEmail;  
+DROP TRIGGER IF EXISTS PaymentReminderEmail;
 
 -- First, change the delimiter to allow semicolons within trigger bodies
 DELIMITER $$
