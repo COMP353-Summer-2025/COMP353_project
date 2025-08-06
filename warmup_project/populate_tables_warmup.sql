@@ -638,6 +638,8 @@ VALUES (
 -- Purpose: 25 members with strategic age distribution (minors/adults) 
 --          and varied configurations for comprehensive query testing
 -- ===================================================================
+-- Reset auto-increment to ensure member IDs start at 1
+ALTER TABLE ClubMembers AUTO_INCREMENT = 1;
 INSERT INTO ClubMembers (
         firstName,
         lastName,
