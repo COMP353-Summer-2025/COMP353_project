@@ -266,7 +266,7 @@ INSERT INTO SecondaryFamilyMembers (firstName, lastName, dateOfBirth, socialSecu
  (305, 405, 'Setter');
 
 --  Query #14 insert values
-q14: -- Club Members (all now majors, born before 2007, joined when they were minors)
+-- Club Members (all now majors, born before 2007, joined when they were minors)
 INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, isMinor, locationID,
     socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode)
 VALUES
@@ -302,3 +302,137 @@ VALUES
 (508, 204, '2025-01-04', 200, 2025),
 (509, 205, '2018-01-01', 200, 2018),
 (510, 205, '2025-01-05', 200, 2025);
+
+--  Query #17 insert values
+-- Clean approach with completely unique identifiers
+-- Use very high IDs to avoid any conflicts
+
+-- 1. Insert Family Members (using IDs 2001-2005)
+INSERT INTO FamilyMembers (familyMemberID, firstName, lastName, socialSecurityNumber, dateOfBirth, telephoneNumber, email, address, city, province, postalCode) VALUES
+(2001, 'Coach', 'Sarah', 'COACH001', '1980-03-15', '514-555-2001', 'coach.sarah@mvc.com', '123 Coach St', 'Montreal', 'QC', 'H1A 1A1'),
+(2002, 'Coach', 'Michael', 'COACH002', '1975-07-22', '514-555-2002', 'coach.michael@mvc.com', '456 Training Ave', 'Montreal', 'QC', 'H1B 1B1'),
+(2003, 'Coach', 'Jennifer', 'COACH003', '1982-11-08', '514-555-2003', 'coach.jennifer@mvc.com', '789 Volleyball Rd', 'Montreal', 'QC', 'H1C 1C1'),
+(2004, 'Coach', 'Robert', 'COACH004', '1978-05-30', '514-555-2004', 'coach.robert@mvc.com', '321 Sports Blvd', 'Montreal', 'QC', 'H1D 1D1'),
+(2005, 'Coach', 'Lisa', 'COACH005', '1985-09-12', '514-555-2005', 'coach.lisa@mvc.com', '654 Game Lane', 'Montreal', 'QC', 'H1E 1E1');
+
+-- 2. Insert Personnel records (using explicit high IDs 2001-2005)
+INSERT INTO Personnel (personnelID, firstName, lastName, dateOfBirth, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, email, role, mandate) VALUES
+(2001, 'Coach', 'Sarah', '1980-03-15', 'COACH001', 'CSAH80031500', '514-555-2001', '123 Coach St', 'Montreal', 'QC', 'H1A 1A1', 'coach.sarah@mvc.com', 'Coach', 'Salaried'),
+(2002, 'Coach', 'Michael', '1975-07-22', 'COACH002', 'CMIC75072200', '514-555-2002', '456 Training Ave', 'Montreal', 'QC', 'H1B 1B1', 'coach.michael@mvc.com', 'Coach', 'Salaried'),
+(2003, 'Coach', 'Jennifer', '1982-11-08', 'COACH003', 'CJEN82110800', '514-555-2003', '789 Volleyball Rd', 'Montreal', 'QC', 'H1C 1C1', 'coach.jennifer@mvc.com', 'Coach', 'Salaried'),
+(2004, 'Coach', 'Robert', '1978-05-30', 'COACH004', 'CROB78053000', '514-555-2004', '321 Sports Blvd', 'Montreal', 'QC', 'H1D 1D1', 'coach.robert@mvc.com', 'Coach', 'Salaried'),
+(2005, 'Coach', 'Lisa', '1985-09-12', 'COACH005', 'CLIS85091200', '514-555-2005', '654 Game Lane', 'Montreal', 'QC', 'H1E 1E1', 'coach.lisa@mvc.com', 'Coach', 'Salaried');
+
+-- 3. Assign personnel to location 1
+INSERT INTO PersonnelLocation (personnelID, locationID, startDate, endDate) VALUES
+(2001, 1, '2024-01-15', NULL),
+(2002, 1, '2024-02-01', NULL),
+(2003, 1, '2024-01-20', NULL),
+(2004, 1, '2024-03-01', NULL),
+(2005, 1, '2024-02-15', NULL);
+
+-- 4. Insert Club Members (using explicit high IDs 2001-2005)
+INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, height, weight, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, locationID, isMinor) VALUES
+(2001, 'Emma', 'Anderson', '2010-06-10', 1.5, 45.0, 'CHILD001', 'CEMM10061000', '514-555-2001', '123 Coach St', 'Montreal', 'QC', 'H1A 1A1', 1, TRUE),
+(2002, 'James', 'Brown', '2008-12-05', 1.6, 50.0, 'CHILD002', 'CJAM08120500', '514-555-2002', '456 Training Ave', 'Montreal', 'QC', 'H1B 1B1', 1, TRUE),
+(2003, 'Sophie', 'Davis', '2009-08-18', 1.4, 42.0, 'CHILD003', 'CSOP09081800', '514-555-2003', '789 Volleyball Rd', 'Montreal', 'QC', 'H1C 1C1', 1, TRUE),
+(2004, 'Alexander', 'Wilson', '2007-04-25', 1.7, 55.0, 'CHILD004', 'CALE07042500', '514-555-2004', '321 Sports Blvd', 'Montreal', 'QC', 'H1D 1D1', 1, TRUE),
+(2005, 'Olivia', 'Martinez', '2011-01-14', 1.3, 40.0, 'CHILD005', 'COLI11011400', '514-555-2005', '654 Game Lane', 'Montreal', 'QC', 'H1E 1E1', 1, TRUE);
+
+-- 5. Create family relationships - FIXED with valid relationship values
+INSERT INTO MemberFamilyRelations (memberID, familyMemberID, relationship) VALUES
+(2001, 2001, 'Father'),
+(2002, 2002, 'Father'),
+(2003, 2003, 'Mother'),
+(2004, 2004, 'Father'),
+(2005, 2005, 'Mother');
+
+-- 6. Insert payments for 2025
+INSERT INTO Payments (memberID, paymentDate, paymentAmount, paymentMethod, membershipYear) VALUES
+(2001, '2025-01-15', 60.00, 'Credit Card', 2025),
+(2002, '2025-01-20', 75.00, 'Credit Card', 2025),
+(2003, '2025-02-01', 55.00, 'Credit Card', 2025),
+(2004, '2025-02-10', 80.00, 'Credit Card', 2025),
+(2005, '2025-01-25', 50.00, 'Credit Card', 2025);
+
+--  Query #19 insert values
+
+-- ========================================
+-- CORRECTED INSERT STATEMENTS FOR QUERY #19 SAMPLE DATA
+-- These statements handle existing data and avoid duplicate key errors
+-- ========================================
+
+-- 1. Insert Locations (using higher IDs to avoid conflicts)
+INSERT IGNORE INTO Locations (locationID, type, name, address, city, province, postalCode, phoneNumber, webAddress, maxCapacity) VALUES
+(10, 'Head', 'Montreal Downtown Center', '123 Main St', 'Montreal', 'Quebec', 'H1A 1A1', '(514) 555-0100', 'www.mvc-downtown.com', 200),
+(11, 'Branch', 'Laval Sports Complex', '456 Sports Ave', 'Laval', 'Quebec', 'H7A 2B2', '(450) 555-0200', 'www.mvc-laval.com', 150),
+(12, 'Branch', 'Quebec City Branch', '789 Volleyball Blvd', 'Quebec City', 'Quebec', 'G1A 3C3', '(418) 555-0300', 'www.mvc-quebec.com', 180),
+(13, 'Branch', 'Sherbrooke Athletics Hub', '321 Athletics Way', 'Sherbrooke', 'Quebec', 'J1A 4D4', '(819) 555-0400', 'www.mvc-sherbrooke.com', 120);
+
+-- 2. Insert Personnel (Volunteers) - using higher IDs to avoid conflicts
+INSERT INTO Personnel (personnelID, firstName, lastName, dateOfBirth, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, email, role, mandate) VALUES
+(2010, 'Sakura', 'Haruno', '1985-03-28', '123-456-789', 'HARU85032801', '(514) 555-0123', '100 Cherry St', 'Montreal', 'Quebec', 'H1B 2C3', 'sakura.haruno@email.com', 'Coach', 'Volunteer'),
+(2011, 'Natsu', 'Dragneel', '1988-07-15', '234-567-890', 'DRAG88071502', '(514) 555-0456', '200 Fire Ave', 'Montreal', 'Quebec', 'H2C 3D4', 'natsu.dragneel@gmail.com', 'Assistant Coach', 'Volunteer'),
+(2012, 'Edward', 'Elric', '1990-02-03', '345-678-901', 'ELRI90020303', '(450) 555-0789', '300 Alchemy Rd', 'Laval', 'Quebec', 'H7B 4E5', 'e.elric@outlook.com', 'Other', 'Volunteer'),
+(2013, 'Mikasa', 'Ackerman', '1987-02-10', '456-789-012', 'ACKE87021004', '(438) 555-0234', '400 Wall St', 'Quebec City', 'Quebec', 'G1B 5F6', 'mikasa.ackerman@yahoo.com', 'Captain', 'Volunteer'),
+(2014, 'Tanjiro', 'Kamado', '1989-07-14', '567-890-123', 'KAMA89071405', '(819) 555-0567', '500 Demon Slayer Ln', 'Sherbrooke', 'Quebec', 'J1B 6G7', 'tanjiro.kamado@hotmail.com', 'Coach', 'Volunteer');
+
+-- 3. Insert PersonnelLocation (Current assignments) - updated with new IDs
+INSERT INTO PersonnelLocation (personnelID, locationID, startDate, endDate) VALUES
+(2010, 10, '2024-01-01', NULL),
+(2011, 10, '2024-02-01', NULL),
+(2012, 11, '2024-01-15', NULL),
+(2013, 12, '2024-03-01', NULL),
+(2014, 13, '2024-01-01', NULL);
+
+-- 4. Insert FamilyMembers (Same people as personnel, linked by SSN) - using higher IDs
+INSERT INTO FamilyMembers (familyMemberID, firstName, lastName, dateOfBirth, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, email) VALUES
+(2010, 'Sakura', 'Haruno', '1985-03-28', '123-456-789', 'HARU85032801', '(514) 555-0123', '100 Cherry St', 'Montreal', 'Quebec', 'H1B 2C3', 'sakura.haruno@email.com'),
+(2011, 'Natsu', 'Dragneel', '1988-07-15', '234-567-890', 'DRAG88071502', '(514) 555-0456', '200 Fire Ave', 'Montreal', 'Quebec', 'H2C 3D4', 'natsu.dragneel@gmail.com'),
+(2012, 'Edward', 'Elric', '1990-02-03', '345-678-901', 'ELRI90020303', '(450) 555-0789', '300 Alchemy Rd', 'Laval', 'Quebec', 'H7B 4E5', 'e.elric@outlook.com'),
+(2013, 'Mikasa', 'Ackerman', '1987-02-10', '456-789-012', 'ACKE87021004', '(438) 555-0234', '400 Wall St', 'Quebec City', 'Quebec', 'G1B 5F6', 'mikasa.ackerman@yahoo.com'),
+(2014, 'Tanjiro', 'Kamado', '1989-07-14', '567-890-123', 'KAMA89071405', '(819) 555-0567', '500 Demon Slayer Ln', 'Sherbrooke', 'Quebec', 'J1B 6G7', 'tanjiro.kamado@hotmail.com');
+
+-- 5. Insert Minor ClubMembers - using higher IDs and updated locationID references
+INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, height, weight, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, locationID, isMinor, email) VALUES
+(2010, 'Hinata', 'Haruno', '2010-04-15', 1.46, 40.00, '111-222-333', 'HARU10041501', '(514) 555-1001', '100 Cherry St', 'Montreal', 'Quebec', 'H1B 2C3', 10, 1, 'hinata.haruno@email.com'),
+(2011, 'Sasuke', 'Haruno', '2012-07-23', 1.35, 35.50, '111-222-444', 'HARU12072301', '(514) 555-1002', '100 Cherry St', 'Montreal', 'Quebec', 'H1B 2C3', 10, 1, 'sasuke.haruno@email.com'),
+(2012, 'Happy', 'Dragneel', '2011-06-10', 1.41, 38.25, '222-333-444', 'DRAG11061001', '(514) 555-2001', '200 Fire Ave', 'Montreal', 'Quebec', 'H2C 3D4', 10, 1, 'happy.dragneel@gmail.com'),
+(2013, 'Alphonse', 'Elric', '2009-05-12', 1.50, 42.00, '333-444-555', 'ELRI09051201', '(450) 555-3001', '300 Alchemy Rd', 'Laval', 'Quebec', 'H7B 4E5', 11, 1, 'alphonse.elric@outlook.com'),
+(2014, 'Roy', 'Elric', '2013-11-08', 1.31, 32.75, '333-444-666', 'ELRI13110801', '(450) 555-3002', '300 Alchemy Rd', 'Laval', 'Quebec', 'H7B 4E5', 11, 1, 'roy.elric@outlook.com'),
+(2015, 'Winry', 'Elric', '2010-09-18', 1.42, 39.50, '333-444-777', 'ELRI10091801', '(450) 555-3003', '300 Alchemy Rd', 'Laval', 'Quebec', 'H7B 4E5', 11, 1, 'winry.elric@outlook.com'),
+(2016, 'Eren', 'Ackerman', '2011-03-30', 1.49, 41.25, '444-555-666', 'ACKE11033001', '(438) 555-4001', '400 Wall St', 'Quebec City', 'Quebec', 'G1B 5F6', 12, 1, 'eren.ackerman@yahoo.com'),
+(2017, 'Nezuko', 'Kamado', '2012-12-28', 1.39, 36.75, '555-666-777', 'KAMA12122801', '(819) 555-5001', '500 Demon Slayer Ln', 'Sherbrooke', 'Quebec', 'J1B 6G7', 13, 1, 'nezuko.kamado@hotmail.com'),
+(2018, 'Zenitsu', 'Kamado', '2010-08-03', 1.44, 40.50, '555-666-888', 'KAMA10080301', '(819) 555-5002', '500 Demon Slayer Ln', 'Sherbrooke', 'Quebec', 'J1B 6G7', 13, 1, 'zenitsu.kamado@hotmail.com');
+
+-- 6. Insert MemberFamilyRelations (Link family members to minor club members)
+INSERT INTO MemberFamilyRelations (memberID, familyMemberID, relationship) VALUES
+(2010, 2010, 'Mother'),    -- Hinata -> Sakura (Mother)
+(2011, 2010, 'Mother'),    -- Sasuke -> Sakura (Mother)
+(2012, 2011, 'Father'),    -- Happy -> Natsu (Father)
+(2013, 2012, 'Father'),    -- Alphonse -> Edward (Father)
+(2014, 2012, 'Father'),    -- Roy -> Edward (Father)
+(2015, 2012, 'Father'),    -- Winry -> Edward (Father)
+(2016, 2013, 'Mother'),    -- Eren -> Mikasa (Mother)
+(2017, 2014, 'Father'),    -- Nezuko -> Tanjiro (Father)
+(2018, 2014, 'Father');    -- Zenitsu -> Tanjiro (Father)
+
+-- 7. Insert FamilyMemberLocation (Family member location associations)
+INSERT INTO FamilyMemberLocation (familyMemberID, locationID, startDate, endDate) VALUES
+(2010, 10, '2024-01-01', NULL),
+(2011, 10, '2024-02-01', NULL),
+(2012, 11, '2024-01-15', NULL),
+(2013, 12, '2024-03-01', NULL),
+(2014, 13, '2024-01-01', NULL);
+
+-- 8. Insert Payments (Ensure minor members have some payments to satisfy payment conditions)
+INSERT INTO Payments (memberID, paymentDate, paymentAmount, paymentMethod, membershipYear) VALUES
+(2010, '2025-01-15', 50.00, 'Credit Card', 2025),
+(2011, '2025-02-01', 30.00, 'Debit', 2025),
+(2012, '2025-01-20', 25.00, 'Cash', 2025),
+(2013, '2025-01-10', 40.00, 'Credit Card', 2025),
+(2014, '2025-02-15', 35.00, 'Debit', 2025),
+(2015, '2025-01-25', 30.00, 'Cash', 2025),
+(2016, '2025-03-05', 25.00, 'Credit Card', 2025),
+(2017, '2025-01-30', 45.00, 'Debit', 2025),
+(2018, '2025-02-10', 25.00, 'Cash', 2025);
