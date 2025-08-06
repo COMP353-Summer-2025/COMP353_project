@@ -252,7 +252,7 @@ SELECT cm.memberID AS clubMembershipNumber,
     cm.lastName,
     TIMESTAMPDIFF(YEAR, cm.dateOfBirth, CURDATE()) AS age,
     cm.telephoneNumber AS phoneNumber,
-    COALESCE(fm.email, 'No email on file') AS email,
+    cm.email,
     l.name AS currentLocationName
 FROM ClubMembers cm
     JOIN Locations l ON cm.locationID = l.locationID
@@ -291,7 +291,7 @@ SELECT cm.memberID AS clubMembershipNumber,
     MIN(p.paymentDate) AS dateOfJoiningClub,
     TIMESTAMPDIFF(YEAR, cm.dateOfBirth, CURDATE()) AS age,
     cm.telephoneNumber AS phoneNumber,
-    COALESCE(fm.email, 'No email on file') AS email,
+    cm.email,
     l.name AS currentLocationName
 FROM ClubMembers cm
     JOIN Locations l ON cm.locationID = l.locationID
@@ -338,7 +338,7 @@ SELECT cm.memberID AS clubMembershipNumber,
     cm.lastName,
     TIMESTAMPDIFF(YEAR, cm.dateOfBirth, CURDATE()) AS age,
     cm.telephoneNumber AS phoneNumber,
-    COALESCE(fm.email, 'No email on file') AS email,
+    cm.email,
     l.name AS currentLocationName,
     -- Count total formations they've been in
     COUNT(DISTINCT tp.formationID) AS totalFormationsAssigned
@@ -391,7 +391,7 @@ SELECT cm.memberID AS clubMembershipNumber,
     cm.lastName,
     TIMESTAMPDIFF(YEAR, cm.dateOfBirth, CURDATE()) AS age,
     cm.telephoneNumber AS phoneNumber,
-    COALESCE(fm.email, 'No email on file') AS email,
+    cm.email,
     l.name AS currentLocationName
 FROM ClubMembers cm
     JOIN Locations l ON cm.locationID = l.locationID
@@ -495,7 +495,7 @@ SELECT cm.memberID AS clubMembershipNumber,
     cm.lastName,
     TIMESTAMPDIFF(YEAR, cm.dateOfBirth, CURDATE()) AS age,
     cm.telephoneNumber AS phoneNumber,
-    COALESCE(fm.email, 'No email on file') AS email,
+    cm.email,
     l.name AS currentLocationName,
     COUNT(DISTINCT tf.formationID) AS totalGamesPlayed
 FROM ClubMembers cm
