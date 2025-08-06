@@ -759,3 +759,11 @@ WHERE el.emailDate >= '2024-01-01'
     )
 ORDER BY el.emailDate DESC
 LIMIT 10;
+
+-- ==========================================================================
+-- Query #21: Trigger demonstrations - FIXED VERSION
+-- This section implements triggers for automated business logic enforcement
+-- ==========================================================================
+-- test trigger
+INSERT INTO TeamPlayers (formationID, clubMemberID, role)
+VALUES (13, 1, 'Setter'); 

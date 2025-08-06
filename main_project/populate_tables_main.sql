@@ -223,3 +223,82 @@ INSERT INTO SecondaryFamilyMembers (firstName, lastName, dateOfBirth, socialSecu
 ('Serena', 'Grace', '1998-05-17', 'SSN901234579', 'MED901234579', '555-1013', '2 Spirit Lane', 'Lavender Town', 'Kanto', 'K7G6G2', 'serena.grace@pokemon.com', 'Other', 1),
 ('Grace', 'Yvonne', '1976-10-03', 'SSN901234580', 'MED901234580', '555-1014', '2 Spirit Lane', 'Lavender Town', 'Kanto', 'K7G6G2', 'grace.yvonne@pokemon.com', 'Parent', 1),
 ('Paul', 'Shinji', '1996-08-25', 'SSN901234581', 'MED901234581', '555-1015', '88 Radio Street', 'Goldenrod City', 'Johto', 'J8H7H3', 'paul.shinji@pokemon.com', 'Sibling', 2);
+
+-- QUERY #15 insert values
+  INSERT INTO Teams (teamID, teamName, locationID, headCoachID) VALUES
+ (601, 'Sandgem Town Turtwig', 1, 1),
+ (602, 'Floaroma Town Chimchar', 1, 1),
+ (603, 'Canalave City Piplup', 1, 1),
+ (604, 'Solaceon Town Shinx', 1, 1),
+ (605, 'Pastoria City Budew', 1, 1);
+
+ INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, isMinor, locationID,
+     socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode)
+ VALUES 
+ (401, 'Turtwig', 'Leaf', '2000-06-15', FALSE, 1, 'SSN401', 'MCN401', '555-401', 'Sinnoh Route 1', 'Sandgem Town', 'Sinnoh', 'S1N 100'),
+ (402, 'Chimchar', 'Leaf', '2001-06-15', FALSE, 1, 'SSN402', 'MCN402', '555-402', 'Sinnoh Route 2', 'Floaroma Town', 'Sinnoh', 'S1N 101'),
+ (403, 'Piplup', 'Leaf', '2002-06-15', FALSE, 1, 'SSN403', 'MCN403', '555-403', 'Sinnoh Route 3', 'Canalave City', 'Sinnoh', 'S1N 102'),
+ (404, 'Shinx', 'Leaf', '2003-06-15', FALSE, 1, 'SSN404', 'MCN404', '555-404', 'Sinnoh Route 4', 'Solaceon Town', 'Sinnoh', 'S1N 103'),
+ (405, 'Budew', 'Leaf', '2004-06-15', FALSE, 1, 'SSN405', 'MCN405', '555-405', 'Sinnoh Route 5', 'Pastoria City', 'Sinnoh', 'S1N 104');
+
+ INSERT INTO Payments (paymentID, memberID, paymentDate, paymentAmount, membershipYear)
+ VALUES 
+ (1101, 401, '2025-01-01', 200, 2025),
+ (1102, 402, '2025-01-02', 200, 2025),
+ (1103, 403, '2025-01-03', 200, 2025),
+ (1104, 404, '2025-01-04', 200, 2025),
+ (1105, 405, '2025-01-05', 200, 2025);
+
+ INSERT INTO TeamFormations (formationID, teamID, team2ID, locationID, sessionDate, sessionTime,
+     sessionType, sessionAddress, scoreTeam1, scoreTeam2)
+ VALUES 
+ (301, 601, 602, 1, '2025-03-10', '10:00:00', 'Game', 'Sinnoh Gym 1', 1, 2),
+ (302, 602, 603, 1, '2025-03-11', '10:00:00', 'Game', 'Sinnoh Gym 2', 1, 2),
+ (303, 603, 604, 1, '2025-03-12', '10:00:00', 'Game', 'Sinnoh Gym 3', 1, 2),
+ (304, 604, 605, 1, '2025-03-13', '10:00:00', 'Game', 'Sinnoh Gym 4', 1, 2),
+ (305, 605, 601, 1, '2025-03-14', '10:00:00', 'Game', 'Sinnoh Gym 5', 1, 2);
+
+ INSERT INTO TeamPlayers (formationID, clubMemberID, role) VALUES
+ (301, 401, 'Setter'),
+ (302, 402, 'Setter'),
+ (303, 403, 'Setter'),
+ (304, 404, 'Setter'),
+ (305, 405, 'Setter');
+
+--  Query #14 insert values
+q14: -- Club Members (all now majors, born before 2007, joined when they were minors)
+INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, isMinor, locationID,
+    socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode)
+VALUES
+(201, 'Red', 'Ketchum', '2006-05-01', 0, 1, 'SSN201', 'MCN201', '555-201', 'Pallet Town', 'Kanto', 'QC', 'A1A1A1'),
+(202, 'Leaf', 'Green', '2005-04-01', 0, 1, 'SSN202', 'MCN202', '555-202', 'Viridian', 'Kanto', 'QC', 'A1A1A2'),
+(203, 'Gold', 'Johto', '2004-03-01', 0, 1, 'SSN203', 'MCN203', '555-203', 'Cherrygrove', 'Johto', 'QC', 'A1A1A3'),
+(204, 'May', 'Hoenn', '2003-02-01', 0, 1, 'SSN204', 'MCN204', '555-204', 'Littleroot', 'Hoenn', 'QC', 'A1A1A4'),
+(205, 'Lucas', 'Sinnoh', '2002-01-01', 0, 1, 'SSN205', 'MCN205', '555-205', 'Sandgem', 'Sinnoh', 'QC', 'A1A1A5');
+
+-- Family Members
+INSERT INTO FamilyMembers (familyMemberID, firstName, lastName, dateOfBirth, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, email)
+VALUES
+(301, 'Red Dad', 'Ketchum', '1975-01-01', 'FSSN1', 'FMCN1', '555-301', 'X1', 'City', 'QC', 'Z1Z1Z1', 'red@email.com'),
+(302, 'Leaf Mom', 'Green', '1976-01-01', 'FSSN2', 'FMCN2', '555-302', 'X2', 'City', 'QC', 'Z2Z2Z2', 'leaf@email.com'),
+(303, 'Gold Dad', 'Johto', '1977-01-01', 'FSSN3', 'FMCN3', '555-303', 'X3', 'City', 'QC', 'Z3Z3Z3', 'gold@email.com'),
+(304, 'May Mom', 'Hoenn', '1978-01-01', 'FSSN4', 'FMCN4', '555-304', 'X4', 'City', 'QC', 'Z4Z4Z4', 'may@email.com'),
+(305, 'Lucas Mom', 'Sinnoh', '1979-01-01', 'FSSN5', 'FMCN5', '555-305', 'X5', 'City', 'QC', 'Z5Z5Z5', 'lucas@email.com');
+
+-- MemberFamilyRelations
+INSERT INTO MemberFamilyRelations (memberID, familyMemberID) VALUES
+(201, 301), (202, 302), (203, 303), (204, 304), (205, 305);
+
+-- Payments — first payment made when they were minors (before 18), active in 2025
+INSERT INTO Payments (paymentID, memberID, paymentDate, paymentAmount, membershipYear)
+VALUES
+(501, 201, '2022-05-01', 200, 2022),  -- joined at age 16
+(502, 201, '2025-01-01', 200, 2025),
+(503, 202, '2021-04-01', 200, 2021),
+(504, 202, '2025-01-02', 200, 2025),
+(505, 203, '2020-03-01', 200, 2020),
+(506, 203, '2025-01-03', 200, 2025),
+(507, 204, '2019-02-01', 200, 2019),
+(508, 204, '2025-01-04', 200, 2025),
+(509, 205, '2018-01-01', 200, 2018),
+(510, 205, '2025-01-05', 200, 2025);
