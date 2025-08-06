@@ -302,3 +302,55 @@ VALUES
 (508, 204, '2025-01-04', 200, 2025),
 (509, 205, '2018-01-01', 200, 2018),
 (510, 205, '2025-01-05', 200, 2025);
+
+--  Query #17 insert values
+-- Clean approach with completely unique identifiers
+-- Use very high IDs to avoid any conflicts
+
+-- 1. Insert Family Members (using IDs 2001-2005)
+INSERT INTO FamilyMembers (familyMemberID, firstName, lastName, socialSecurityNumber, dateOfBirth, telephoneNumber, email, address, city, province, postalCode) VALUES
+(2001, 'Coach', 'Sarah', 'COACH001', '1980-03-15', '514-555-2001', 'coach.sarah@mvc.com', '123 Coach St', 'Montreal', 'QC', 'H1A 1A1'),
+(2002, 'Coach', 'Michael', 'COACH002', '1975-07-22', '514-555-2002', 'coach.michael@mvc.com', '456 Training Ave', 'Montreal', 'QC', 'H1B 1B1'),
+(2003, 'Coach', 'Jennifer', 'COACH003', '1982-11-08', '514-555-2003', 'coach.jennifer@mvc.com', '789 Volleyball Rd', 'Montreal', 'QC', 'H1C 1C1'),
+(2004, 'Coach', 'Robert', 'COACH004', '1978-05-30', '514-555-2004', 'coach.robert@mvc.com', '321 Sports Blvd', 'Montreal', 'QC', 'H1D 1D1'),
+(2005, 'Coach', 'Lisa', 'COACH005', '1985-09-12', '514-555-2005', 'coach.lisa@mvc.com', '654 Game Lane', 'Montreal', 'QC', 'H1E 1E1');
+
+-- 2. Insert Personnel records (using explicit high IDs 2001-2005)
+INSERT INTO Personnel (personnelID, firstName, lastName, dateOfBirth, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, email, role, mandate) VALUES
+(2001, 'Coach', 'Sarah', '1980-03-15', 'COACH001', 'CSAH80031500', '514-555-2001', '123 Coach St', 'Montreal', 'QC', 'H1A 1A1', 'coach.sarah@mvc.com', 'Coach', 'Salaried'),
+(2002, 'Coach', 'Michael', '1975-07-22', 'COACH002', 'CMIC75072200', '514-555-2002', '456 Training Ave', 'Montreal', 'QC', 'H1B 1B1', 'coach.michael@mvc.com', 'Coach', 'Salaried'),
+(2003, 'Coach', 'Jennifer', '1982-11-08', 'COACH003', 'CJEN82110800', '514-555-2003', '789 Volleyball Rd', 'Montreal', 'QC', 'H1C 1C1', 'coach.jennifer@mvc.com', 'Coach', 'Salaried'),
+(2004, 'Coach', 'Robert', '1978-05-30', 'COACH004', 'CROB78053000', '514-555-2004', '321 Sports Blvd', 'Montreal', 'QC', 'H1D 1D1', 'coach.robert@mvc.com', 'Coach', 'Salaried'),
+(2005, 'Coach', 'Lisa', '1985-09-12', 'COACH005', 'CLIS85091200', '514-555-2005', '654 Game Lane', 'Montreal', 'QC', 'H1E 1E1', 'coach.lisa@mvc.com', 'Coach', 'Salaried');
+
+-- 3. Assign personnel to location 1
+INSERT INTO PersonnelLocation (personnelID, locationID, startDate, endDate) VALUES
+(2001, 1, '2024-01-15', NULL),
+(2002, 1, '2024-02-01', NULL),
+(2003, 1, '2024-01-20', NULL),
+(2004, 1, '2024-03-01', NULL),
+(2005, 1, '2024-02-15', NULL);
+
+-- 4. Insert Club Members (using explicit high IDs 2001-2005)
+INSERT INTO ClubMembers (memberID, firstName, lastName, dateOfBirth, height, weight, socialSecurityNumber, medicareCardNumber, telephoneNumber, address, city, province, postalCode, locationID, isMinor) VALUES
+(2001, 'Emma', 'Anderson', '2010-06-10', 1.5, 45.0, 'CHILD001', 'CEMM10061000', '514-555-2001', '123 Coach St', 'Montreal', 'QC', 'H1A 1A1', 1, TRUE),
+(2002, 'James', 'Brown', '2008-12-05', 1.6, 50.0, 'CHILD002', 'CJAM08120500', '514-555-2002', '456 Training Ave', 'Montreal', 'QC', 'H1B 1B1', 1, TRUE),
+(2003, 'Sophie', 'Davis', '2009-08-18', 1.4, 42.0, 'CHILD003', 'CSOP09081800', '514-555-2003', '789 Volleyball Rd', 'Montreal', 'QC', 'H1C 1C1', 1, TRUE),
+(2004, 'Alexander', 'Wilson', '2007-04-25', 1.7, 55.0, 'CHILD004', 'CALE07042500', '514-555-2004', '321 Sports Blvd', 'Montreal', 'QC', 'H1D 1D1', 1, TRUE),
+(2005, 'Olivia', 'Martinez', '2011-01-14', 1.3, 40.0, 'CHILD005', 'COLI11011400', '514-555-2005', '654 Game Lane', 'Montreal', 'QC', 'H1E 1E1', 1, TRUE);
+
+-- 5. Create family relationships - FIXED with valid relationship values
+INSERT INTO MemberFamilyRelations (memberID, familyMemberID, relationship) VALUES
+(2001, 2001, 'Father'),
+(2002, 2002, 'Father'),
+(2003, 2003, 'Mother'),
+(2004, 2004, 'Father'),
+(2005, 2005, 'Mother');
+
+-- 6. Insert payments for 2025
+INSERT INTO Payments (memberID, paymentDate, paymentAmount, paymentMethod, membershipYear) VALUES
+(2001, '2025-01-15', 60.00, 'Credit Card', 2025),
+(2002, '2025-01-20', 75.00, 'Credit Card', 2025),
+(2003, '2025-02-01', 55.00, 'Credit Card', 2025),
+(2004, '2025-02-10', 80.00, 'Credit Card', 2025),
+(2005, '2025-01-25', 50.00, 'Credit Card', 2025);
