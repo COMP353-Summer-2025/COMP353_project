@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVC Database</title>
+    <!-- Link the stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Montreal Volleyball Club (MVC)</h1>
+        
+        <div class="card">
+            <h3>Database Tables</h3>
+            <ul>
+                {% for table in tables %}
+                <li><a href="{{ url_for('show_table', table_name=table) }}">{{ table }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>Create New Table</h3>
+            <form method="POST" action="/create_table" onsubmit="return gatherColumns()">
+                <label>Table Name:</label>
+                <input type="text" name="table_name" required>
+
+                <div id="columns-container">
+                    <label>Column 1:</label>
+                    <input type="text" name="column_input" placeholder="e.g., id INT PRIMARY KEY" required>
+                </div>
+                <button type="button" onclick="addColumnInput()">+ Add Column</button><br><br>
+
+                <input type="hidden" name="columns" id="columns">
+                <button type="submit">Create Table</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Delete Table</h3>
+            <form method="POST" action="/delete_table">
+                <label>Select Table to Delete:</label>
+                <select name="delete_table_name" required>
+                    <!-- This is the safe, non-selectable placeholder option -->
+                    <option value="" disabled selected>--- Please select a table ---</option>
+                    
+                    {% for table in tables %}
+                    <option value="{{ table }}">{{ table }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Delete Table</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let columnCount = 1;
+        function addColumnInput() {
+            columnCount++;
+            const container = document.getElementById('columns-container');
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = `<label>Column ${columnCount}:</label><input type="text" name="column_input" placeholder="e.g., name VARCHAR(100)" required>`;
+            container.appendChild(newDiv);
+        }
+        function gatherColumns() {
+            const inputs = document.getElementsByName('column_input');
+            const columnDefs = Array.from(inputs).map(input => input.value.trim()).filter(val => val);
+            document.getElementById('columns').value = columnDefs.join(', ');
+            return true;
+        }
+    </script>
+</body>
+</html>

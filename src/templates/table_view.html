@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ table }} Table</title>
+    <!-- Link the stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Table: {{ table }}</h2>
+        
+        <!-- The table is now wrapped in a div to handle overflow -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        {% for col in columns %}
+                        <td>{{ row[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="{{ columns|length }}">Table is empty.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="toggleSection('insert')">Insert</button>
+            <button onclick="toggleSection('edit')">Edit</button>
+            <button onclick="toggleSection('delete')">Delete</button>
+        </div>
+        
+        <!-- Action Sections -->
+        <div id="insert-section" class="card" style="display: none;">
+            <h3>Insert New Row</h3>
+            <form method="POST" action="/insert_row/{{ table }}">
+                {% for col in columns %}
+                <label>{{ col }}:</label>
+                <input type="text" name="{{ col }}">
+                {% endfor %}
+                <button type="submit">Confirm Insert</button>
+            </form>
+        </div>
+        
+        <div id="edit-section" class="card" style="display: none;">
+            <h3>Edit Existing Row</h3>
+            <form method="POST" action="/edit_row/{{ table }}">
+                <label>Primary Key Column:</label>
+                <input type="text" name="pk_column" placeholder="e.g., id" required>
+                
+                <label>Primary Key Value:</label>
+                <input type="text" name="pk_value" placeholder="e.g., 101" required>
+                <hr>
+                <p>Leave a field blank if you don't want to change it:</p>
+                {% for col in columns %}
+                <label>New {{ col }}:</label>
+                <input type="text" name="{{ col }}">
+                {% endfor %}
+                <button type="submit">Confirm Edit</button>
+            </form>
+        </div>
+        
+        <div id="delete-section" class="card" style="display: none;">
+            <h3>Delete Row</h3>
+            <form method="POST" action="/delete_row/{{ table }}">
+                <label>Primary Key Column:</label>
+                <input type="text" name="pk_column" placeholder="e.g., id" required>
+                <label>Primary Key Value:</label>
+                <input type="text" name="pk_value" placeholder="e.g., 101" required>
+                <button type="submit">Confirm Delete</button>
+            </form>
+        </div>
+        
+        <a href="/" class="home-link">← Back to Home</a>
+    </div>
+
+    <script>
+        function toggleSection(section) {
+            document.getElementById('insert-section').style.display = 'none';
+            document.getElementById('edit-section').style.display = 'none';
+            document.getElementById('delete-section').style.display = 'none';
+            
+            const activeSection = document.getElementById(section + '-section');
+            if (activeSection.style.display === 'none') {
+                activeSection.style.display = 'block';
+            } else {
+                activeSection.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
